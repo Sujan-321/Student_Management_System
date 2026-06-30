@@ -22,10 +22,10 @@ class UserProfile(TimeStampModel):
         ("above 2 years", "Above 2 Years"),
     ]
     teacher_name = models.CharField(max_length=255, null=False, blank=False)
-    image = models.ImageField(upload_to="post_images/%Y/%m/%d", blank=False)
+    image = models.ImageField(upload_to="Teacher/teacher_images/%Y/%m/%d", blank=False)
     email = models.EmailField(unique=True)
     address = models.CharField(max_length=255, blank=False)
-    mobile_no = models.IntegerField(max_length=10)
+    mobile_no = models.IntegerField()
     subject = models.ManyToManyField(Subject)
     qualification = models.TextField(blank=False)
     experience = models.CharField(max_length=13, choices=EXPERIENCE_CHOICES, default="0-1 year")
@@ -36,7 +36,8 @@ class UserProfile(TimeStampModel):
 class Post(TimeStampModel):
     title = models.CharField(max_length=255, blank=False)
     desc = models.TextField(blank=False)
-
+    teacher = models.ForeignKey("UserProfile", on_delete=models.CASCADE, null=False, blank=False)
+    
     def __str__(self):
         return self.title
 
