@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 import re
+from django.contrib.auth.forms import AuthenticationForm
 
 class UserRegistrationForm(UserCreationForm):
 
@@ -36,3 +37,7 @@ class UserRegistrationForm(UserCreationForm):
             )
 
         return username
+
+
+class UserLoginForm(AuthenticationForm):
+    remember_me = forms.BooleanField(required=False)
