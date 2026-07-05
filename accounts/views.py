@@ -53,6 +53,7 @@ class UserLoginView(LoginView):
     def get_success_url(self):
         return reverse_lazy("home")
 
+
 class UserLogoutView(LogoutView):
 
     def dispatch(self, request, *args, **kwargs):
