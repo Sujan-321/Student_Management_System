@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="{% url 'teacher_dashboard' %}">
+            Teacher Panel
+        </a>
+
+        <div class="ms-auto text-white">
+
+            {{ request.user.username }}
+
+        </div>
+
+    </div>
+
+</nav>
