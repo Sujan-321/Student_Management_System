@@ -1,0 +1,13 @@
+{% extends "Teacher/base.html" %}
+
+{% block content %}
+
+<h3>Welcome {{ request.user.username }}</h3>
+
+<p>Teacher Dashboard</p>
+
+<a href="{% url 'teacher_profile' %}">
+    My Profile
+</a>
+
+{% endblock %}
