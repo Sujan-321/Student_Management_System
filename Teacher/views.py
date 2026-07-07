@@ -14,9 +14,10 @@ class TeacherDashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["teacher"] = Teacher.objects.get(user=self.request.user)
+        teacher = Teacher.objects.get(user=self.request.user)
+        context["teacher"] = teacher
         context["student_count"] = StudentProfile.objects.count()
-        # context["class_count"] = 0
+        context["teacher_count"] = Teacher.objects.count()
         context["subject_count"] = Subject.objects.count()
 
         return context
