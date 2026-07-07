@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 
 from .forms import TeacherProfileForm
 from .models import Teacher, Subject
-from Student.models import StudentProfile
+from Student.models import Student
 
 
 class TeacherDashboardView(LoginRequiredMixin, TemplateView):
@@ -16,7 +16,7 @@ class TeacherDashboardView(LoginRequiredMixin, TemplateView):
 
         teacher = Teacher.objects.get(user=self.request.user)
         context["teacher"] = teacher
-        context["student_count"] = StudentProfile.objects.count()
+        context["student_count"] = Student.objects.count()
         context["teacher_count"] = Teacher.objects.count()
         context["subject_count"] = Subject.objects.count()
 
