@@ -5,6 +5,15 @@ from .forms import StudentForm
 from .models import Student
 
 
+class StudentListView(ListView):
+
+    model = Student
+    template_name = "Student/student_list.html"
+    context_object_name = "students"
+    paginate_by = 10
+    ordering = ["id"]
+
+
 class StudentCreateView(CreateView):
 
     model = Student
