@@ -62,7 +62,7 @@ class Subject(TimeStampModel):
         return self.sub_name
 
 
-class UserProfile(TimeStampModel):
+class Teacher(TimeStampModel):
     EXPERIENCE_CHOICES = [
         ("0-1 year", "0-1 Year"),
         ("1-2 years", "1-2 Years"),
@@ -83,7 +83,7 @@ class UserProfile(TimeStampModel):
 
 
 class Post(TimeStampModel):
-    teacher = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="posts")
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="posts")
     title = models.CharField(max_length=255)
     desc = models.TextField()
     def __str__(self):
