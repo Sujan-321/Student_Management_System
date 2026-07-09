@@ -1,7 +1,11 @@
 from django.contrib import admin
 
-from .models import Student, Department
+from .models import Student, Department, ClassRoom, Attendance, Exam, Mark
 
+admin.site.register(ClassRoom)
+admin.site.register(Attendance)
+admin.site.register(Exam)
+admin.site.register(Mark)
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):

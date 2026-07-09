@@ -75,7 +75,7 @@ class Student(TimeStampModel):
     admission_date = models.DateField()
     profile_image = models.ImageField(upload_to="Student/student_images/%Y/%m/%d/", blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Active")    
-    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name="students")
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name="students", null=True, blank=True)
 
 
     def __str__(self):
