@@ -20,11 +20,11 @@ class DepartmentAdmin(admin.ModelAdmin):
 class StudentAdmin(admin.ModelAdmin):
 
     list_display = (
-        "roll_number",
+        "rank",
         "first_name",
         "last_name",
         "department",
-        "phone_number",
+        "contact",
         "status",
     )
 
@@ -37,6 +37,6 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = (
         "first_name",
         "last_name",
-        "roll_number",
+        "rank",
         "registration_number",
     )
