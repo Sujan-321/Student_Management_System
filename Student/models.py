@@ -128,3 +128,38 @@ class Exam(TimeStampModel):
     def __str__(self):
 
         return self.exam_name
+
+class Mark(TimeStampModel):
+
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="marks")
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="marks")
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="marks")
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name="marks")
+    full_marks = models.PositiveIntegerField(default=100)
+    pass_marks = models.PositiveIntegerField(default=40)
+    obtained_marks = models.DecimalField(max_digits=5, decimal_places=2)
+    remarks = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        unique_together = (
+            "student",
+            "subject",
+            "exam",
+        )
+
+    @property
+    def percentage(self):
+        return round(
+            (self.obtained_marks / self.full_marks) * 100,
+            2,
+        )
+
+    @property
+    def result(self):
+
+        if self.obtained_marks >= self.pass_marks:
+            return "Pass"
+        return "Fail"
+
+    def __str__(self):
+        return f"{self.student} - {self.subject}"
