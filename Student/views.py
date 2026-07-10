@@ -49,12 +49,13 @@
 
 
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.urls import reverse_lazy
-from django.views.generic import *
-
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, TemplateView, DeleteView
 from .forms import StudentForm, DepartmentForm
 from .models import Student, Department
+from .models import Attendance
+from .forms import AttendanceForm
 
 
 class StudentListView(ListView):
@@ -178,3 +179,102 @@ class DepartmentUpdateView(UpdateView):
             "Department updated successfully."
         )
         return super().form_valid(form)
+
+
+class AttendanceListView(ListView):
+    """
+    Display all attendance records.
+    """
+
+    model = Attendance
+    template_name = "Student/attendance/attendance_list.html"
+    context_object_name = "attendances"
+    ordering = ["-attendance_date", "student"]
+
+
+class AttendanceCreateView(CreateView):
+    """
+    Create a new attendance record.
+    """
+
+    model = Attendance
+    form_class = AttendanceForm
+    template_name = "Student/attendance/attendance_create.html"
+    success_url = reverse_lazy("attendance_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Attendance record has been created successfully."
+        )
+        return super().form_valid(form)
+
+
+class AttendanceUpdateView(UpdateView):
+    """
+    Update an existing attendance record.
+    """
+
+    model = Attendance
+    form_class = AttendanceForm
+    template_name = "Student/attendance/attendance_update.html"
+    success_url = reverse_lazy("attendance_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Attendance record has been updated successfully."
+        )
+        return super().form_valid(form)
+
+
+class AttendanceDetailView(DetailView):
+    """
+    Display detailed information for a single attendance record.
+    """
+
+    model = Attendance
+    template_name = "Student/attendance/attendance_detail.html"
+    context_object_name = "attendance"
+
+
+class AttendanceReportView(TemplateView):
+    """
+    Display attendance summary grouped by student and subject.
+    """
+
+    template_name = "Student/attendance/attendance_report.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        reports = (
+            Attendance.objects.values(
+                "student__first_name",
+                "student__last_name",
+                "subject__sub_name",
+            )
+            .annotate(
+                total=Count("id"),
+                present=Count(
+                    "id",
+                    filter=Q(status="Present"),
+                ),
+                absent=Count(
+                    "id",
+                    filter=Q(status="Absent"),
+                ),
+                leave=Count(
+                    "id",
+                    filter=Q(status="Leave"),
+                ),
+            )
+            .order_by(
+                "student__first_name",
+                "subject__sub_name",
+            )
+        )
+
+        context["reports"] = reports
+
+        return context
