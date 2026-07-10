@@ -53,8 +53,8 @@ from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import *
 
-from .forms import StudentForm
-from .models import Student
+from .forms import StudentForm, DepartmentForm
+from .models import Student, Department
 
 
 class StudentListView(ListView):
@@ -141,4 +141,40 @@ class StudentDeleteView(DeleteView):
 
         messages.success(self.request, "Student deleted successfully.")
 
+        return super().form_valid(form)
+
+
+
+class DepartmentListView(ListView):
+    model = Department
+    template_name = "Student/department/department_list.html"
+    context_object_name = "departments"
+    ordering = ["name"]
+
+
+class DepartmentCreateView(CreateView):
+    model = Department
+    form_class = DepartmentForm
+    template_name = "Student/department/department_create.html"
+    success_url = reverse_lazy("department_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Department created successfully."
+        )
+        return super().form_valid(form)
+
+
+class DepartmentUpdateView(UpdateView):
+    model = Department
+    form_class = DepartmentForm
+    template_name = "Student/department/department_update.html"
+    success_url = reverse_lazy("department_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Department updated successfully."
+        )
         return super().form_valid(form)
