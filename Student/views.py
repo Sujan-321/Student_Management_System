@@ -52,8 +52,8 @@ from django.contrib import messages
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, TemplateView, DeleteView
-from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamForm
-from .models import Student, Department, Attendance, Mark, Exam
+from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamForm, ClassRoomForm
+from .models import Student, Department, Attendance, Mark, Exam, ClassRoom
 from django.shortcuts import get_object_or_404
 
 
@@ -435,6 +435,7 @@ class ExamCreateView(CreateView):
 
 
 class ExamUpdateView(UpdateView):
+
     """
     Update an existing examination.
     """
@@ -448,5 +449,57 @@ class ExamUpdateView(UpdateView):
         messages.success(
             self.request,
             "Examination updated successfully."
+        )
+        return super().form_valid(form)
+
+
+
+# working on classroom feature
+class ClassRoomListView(ListView):
+    """
+    Display a list of all classrooms.
+    """
+
+    model = ClassRoom
+    template_name = "Student/classroom/classroom_list.html"
+    context_object_name = "classrooms"
+    ordering = [
+        "name",
+        "section",
+    ]
+
+
+class ClassRoomCreateView(CreateView):
+    """
+    Create a new classroom.
+    """
+
+    model = ClassRoom
+    form_class = ClassRoomForm
+    template_name = "Student/classroom/classroom_create.html"
+    success_url = reverse_lazy("classroom_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Classroom created successfully."
+        )
+        return super().form_valid(form)
+
+
+class ClassRoomUpdateView(UpdateView):
+    """
+    Update an existing classroom.
+    """
+
+    model = ClassRoom
+    form_class = ClassRoomForm
+    template_name = "Student/classroom/classroom_update.html"
+    success_url = reverse_lazy("classroom_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Classroom updated successfully."
         )
         return super().form_valid(form)
