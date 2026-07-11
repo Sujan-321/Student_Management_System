@@ -1,6 +1,20 @@
 from django.urls import path
 
-from .views import AttendanceListView, AttendanceCreateView, AttendanceUpdateView, AttendanceDetailView, AttendanceReportView, MarkListView, MarkCreateView, MarkUpdateView, ResultSheetView, TranscriptView
+from .views import (
+    AttendanceListView,
+    AttendanceCreateView,
+    AttendanceUpdateView,
+    AttendanceDetailView,
+    AttendanceReportView,
+    MarkListView,
+    MarkCreateView,
+    MarkUpdateView,
+    ResultSheetView,
+    TranscriptView,
+    ExamListView,
+    ExamCreateView,
+    ExamUpdateView,
+)
 
 urlpatterns = [
 
@@ -62,6 +76,23 @@ urlpatterns = [
         "marks/transcript/<int:student_id>/",
         TranscriptView.as_view(),
         name="transcript",
+    ),
+    path(
+        "exam/",
+        ExamListView.as_view(),
+        name="exam_list",
+    ),
+
+    path(
+        "exam/create/",
+        ExamCreateView.as_view(),
+        name="exam_create",
+    ),
+
+    path(
+        "exam/<int:pk>/update/",
+        ExamUpdateView.as_view(),
+        name="exam_update",
     ),
 
 ]
