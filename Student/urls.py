@@ -14,6 +14,9 @@ from .views import (
     ExamListView,
     ExamCreateView,
     ExamUpdateView,
+    ClassRoomCreateView,
+    ClassRoomListView,
+    ClassRoomUpdateView,
 )
 
 urlpatterns = [
@@ -93,6 +96,23 @@ urlpatterns = [
         "exam/<int:pk>/update/",
         ExamUpdateView.as_view(),
         name="exam_update",
+    ),
+    path(
+        "classrooms/",
+        ClassRoomListView.as_view(),
+        name="classroom_list",
+    ),
+
+    path(
+        "classrooms/create/",
+        ClassRoomCreateView.as_view(),
+        name="classroom_create",
+    ),
+
+    path(
+        "classrooms/<int:pk>/update/",
+        ClassRoomUpdateView.as_view(),
+        name="classroom_update",
     ),
 
 ]
