@@ -146,6 +146,7 @@ class StudentDeleteView(DeleteView):
         return super().form_valid(form)
 
 
+# working on Department feature
 
 class DepartmentListView(ListView):
     model = Department
@@ -181,6 +182,8 @@ class DepartmentUpdateView(UpdateView):
         )
         return super().form_valid(form)
 
+
+# working on attendance
 
 class AttendanceListView(ListView):
     """
