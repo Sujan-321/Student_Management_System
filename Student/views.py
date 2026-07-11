@@ -52,10 +52,11 @@ from django.contrib import messages
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, TemplateView, DeleteView
-from .forms import StudentForm, DepartmentForm
-from .models import Student, Department
-from .models import Attendance
-from .forms import AttendanceForm
+from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm
+from .models import Student, Department, Attendance, Mark
+from django.shortcuts import get_object_or_404
+
+
 
 
 class StudentListView(ListView):
@@ -276,5 +277,124 @@ class AttendanceReportView(TemplateView):
         )
 
         context["reports"] = reports
+
+        return context
+
+
+
+# here we start the marks features
+
+class MarkListView(ListView):
+    """
+    Display all student marks.
+    """
+
+    model = Mark
+    template_name = "Student/marks/mark_list.html"
+    context_object_name = "marks"
+    ordering = [
+        "student__first_name",
+        "subject__sub_name",
+    ]
+
+
+class MarkCreateView(CreateView):
+    """
+    Create a new mark entry.
+    """
+
+    model = Mark
+    form_class = MarkForm
+    template_name = "Student/marks/mark_create.html"
+    success_url = reverse_lazy("mark_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Marks added successfully."
+        )
+        return super().form_valid(form)
+
+
+class MarkUpdateView(UpdateView):
+    """
+    Update an existing mark record.
+    """
+
+    model = Mark
+    form_class = MarkForm
+    template_name = "Student/marks/mark_update.html"
+    success_url = reverse_lazy("mark_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Marks updated successfully."
+        )
+        return super().form_valid(form)
+
+
+class ResultSheetView(TemplateView):
+    """
+    Display the result sheet of a selected exam.
+    """
+
+    template_name = "Student/marks/result_sheet.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        exam_id = self.kwargs.get("exam_id")
+
+        context["marks"] = (
+            Mark.objects.filter(
+                exam_id=exam_id
+            )
+            .select_related(
+                "student",
+                "subject",
+                "exam",
+            )
+            .order_by(
+                "student__first_name",
+                "subject__sub_name",
+            )
+        )
+
+        return context
+
+
+class TranscriptView(TemplateView):
+    """
+    Display the complete academic transcript of a student.
+    """
+
+    template_name = "Student/marks/transcript.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        student = get_object_or_404(
+            Student,
+            pk=self.kwargs["student_id"],
+        )
+
+        marks = (
+            Mark.objects.filter(
+                student=student
+            )
+            .select_related(
+                "subject",
+                "exam",
+                "teacher",
+            )
+            .order_by(
+                "exam__start_date",
+                "subject__sub_name",
+            )
+        )
+
+        context["student"] = student
+        context["marks"] = marks
 
         return context
