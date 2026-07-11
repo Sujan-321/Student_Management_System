@@ -54,7 +54,22 @@ class UserLoginView(LoginView):
 
         return super().form_valid(form)
 
+    # def get_success_url(self):
+    #     return reverse_lazy("home")
+
     def get_success_url(self):
+
+        user = self.request.user
+
+        if user.is_superuser:
+            return reverse_lazy("admin_dashboard")
+
+        if user.groups.filter(name="Teacher").exists():  # here we check the data is present in the Teacher 
+            return reverse_lazy("teacher_dashboard")    # it render the user in the teacher urls.py file
+
+        if user.groups.filter(name="Student").exists():
+            return reverse_lazy("student_dashboard")
+
         return reverse_lazy("home")
 
 
