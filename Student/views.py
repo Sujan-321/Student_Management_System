@@ -52,8 +52,8 @@ from django.contrib import messages
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, TemplateView, DeleteView
-from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm
-from .models import Student, Department, Attendance, Mark
+from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamForm
+from .models import Student, Department, Attendance, Mark, Exam
 from django.shortcuts import get_object_or_404
 
 
@@ -398,3 +398,55 @@ class TranscriptView(TemplateView):
         context["marks"] = marks
 
         return context
+
+
+# working on exam feature
+
+class ExamListView(ListView):
+    """
+    Display a list of all examinations.
+    """
+
+    model = Exam
+    template_name = "Student/exam/exam_list.html"
+    context_object_name = "exams"
+    ordering = [
+        "-start_date",
+        "exam_name",
+    ]
+
+
+class ExamCreateView(CreateView):
+    """
+    Create a new examination.
+    """
+
+    model = Exam
+    form_class = ExamForm
+    template_name = "Student/exam/exam_create.html"
+    success_url = reverse_lazy("exam_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Examination created successfully."
+        )
+        return super().form_valid(form)
+
+
+class ExamUpdateView(UpdateView):
+    """
+    Update an existing examination.
+    """
+
+    model = Exam
+    form_class = ExamForm
+    template_name = "Student/exam/exam_update.html"
+    success_url = reverse_lazy("exam_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Examination updated successfully."
+        )
+        return super().form_valid(form)
