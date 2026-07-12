@@ -102,6 +102,28 @@ class StudentProfileView(LoginRequiredMixin, DetailView):
             raise Http404("Student profile not found.")
 
 
+class StudentProfileUpdateView(LoginRequiredMixin, UpdateView):
+
+    model = Student
+    form_class = StudentForm
+    template_name = "Student/profile_update.html"
+    success_url = reverse_lazy("student_profile")
+
+    def get_object(self):
+
+        return Student.objects.get(user=self.request.user)
+
+    def form_valid(self, form):
+
+        messages.success(
+            self.request,
+            "Profile updated successfully."
+        )
+
+        return super().form_valid(form)
+    
+
+
 class StudentListView(LoginRequiredMixin, ListView):
 
     model = Student
