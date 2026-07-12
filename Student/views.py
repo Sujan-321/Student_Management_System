@@ -202,7 +202,7 @@ class AttendanceListView(ListView):
 
 
 class AttendanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    
+
     permission_required = "Student.add_attendance"
 
     model = Attendance
@@ -305,10 +305,8 @@ class MarkListView(ListView):
     ]
 
 
-class MarkCreateView(CreateView):
-    """
-    Create a new mark entry.
-    """
+class MarkCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = "Student.add_mark"
 
     model = Mark
     form_class = MarkForm
