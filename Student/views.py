@@ -53,9 +53,38 @@ from django.db.models import Q, Count
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, TemplateView, DeleteView
 from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamForm, ClassRoomForm
-from .models import Student, Department, Attendance, Mark, Exam, ClassRoom
+from .models import Student, Department, Attendance, Mark, Exam, ClassRoom, Teacher
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+
+class StudentDashboardView(LoginRequiredMixin, TemplateView):
+
+    template_name = "Student/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        student = Student.objects.filter(user=self.request.user).first()
+
+        context["student"] = student
+
+        context["attendance_count"] = (
+            Attendance.objects.filter(student=student).count()
+            if student else 0
+        )
+
+        context["mark_count"] = (
+            Mark.objects.filter(student=student).count()
+            if student else 0
+        )
+
+        context["exam_count"] = Exam.objects.count()
+
+        context["teacher_count"] = Teacher.objects.count()
+
+        return context
 
 
 
