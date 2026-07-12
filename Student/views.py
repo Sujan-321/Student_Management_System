@@ -201,10 +201,9 @@ class AttendanceListView(ListView):
     ordering = ["-attendance_date", "student"]
 
 
-class AttendanceCreateView(CreateView):
-    """
-    Create a new attendance record.
-    """
+class AttendanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    
+    permission_required = "Student.add_attendance"
 
     model = Attendance
     form_class = AttendanceForm
