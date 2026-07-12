@@ -62,7 +62,7 @@ class UserLoginView(LoginView):
         user = self.request.user
 
         if user.is_superuser:
-            return reverse_lazy("admin_dashboard")
+            return reverse_lazy("admin:index")
 
         if user.groups.filter(name="Teacher").exists():  # here we check the data is present in the Teacher 
             return reverse_lazy("teacher_dashboard")    # it render the user in the teacher urls.py file
