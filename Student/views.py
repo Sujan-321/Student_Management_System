@@ -115,7 +115,9 @@ class StudentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
         return super().form_valid(form)
 
 
-class StudentUpdateView(UpdateView):
+class StudentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+
+    permission_required = "Student.change_student"
 
     model = Student
     form_class = StudentForm
