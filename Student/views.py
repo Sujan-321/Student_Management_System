@@ -56,6 +56,7 @@ from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamFo
 from .models import Student, Department, Attendance, Mark, Exam, ClassRoom, Teacher
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import Http404
 
 
 class StudentDashboardView(LoginRequiredMixin, TemplateView):
@@ -86,7 +87,19 @@ class StudentDashboardView(LoginRequiredMixin, TemplateView):
 
         return context
 
+class StudentProfileView(LoginRequiredMixin, DetailView):
 
+    model = Student
+    template_name = "Student/profile.html"
+    context_object_name = "student"
+
+    def get_object(self):
+
+        try:
+            return Student.objects.get(user=self.request.user)
+
+        except Student.DoesNotExist:
+            raise Http404("Student profile not found.")
 
 
 class StudentListView(LoginRequiredMixin, ListView):

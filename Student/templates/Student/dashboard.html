@@ -1,0 +1,116 @@
+{% extends "Student/base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        Welcome {{ request.user.username }}
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Attendance</h5>
+
+                    <h2>{{ attendance_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Marks</h5>
+
+                    <h2>{{ mark_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Teachers</h5>
+
+                    <h2>{{ teacher_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card text-center shadow">
+
+                <div class="card-body">
+
+                    <h5>Exams</h5>
+
+                    <h2>{{ exam_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    {% if student %}
+
+    <table class="table table-bordered mt-4">
+
+        <tr>
+            <th>Roll Number</th>
+            <td>{{ student.roll_number }}</td>
+        </tr>
+
+        <tr>
+            <th>Registration No</th>
+            <td>{{ student.registration_number }}</td>
+        </tr>
+
+        <tr>
+            <th>Department</th>
+            <td>{{ student.department }}</td>
+        </tr>
+
+        <tr>
+            <th>Classroom</th>
+            <td>{{ student.classroom }}</td>
+        </tr>
+
+        <tr>
+            <th>Status</th>
+            <td>{{ student.status }}</td>
+        </tr>
+
+    </table>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
