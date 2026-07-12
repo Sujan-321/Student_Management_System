@@ -55,11 +55,12 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, T
 from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamForm, ClassRoomForm
 from .models import Student, Department, Attendance, Mark, Exam, ClassRoom
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 
 
-class StudentListView(ListView):
+class StudentListView(LoginRequiredMixin, ListView):
 
     model = Student
     template_name = "Student/student_list.html"
@@ -98,7 +99,9 @@ class StudentListView(ListView):
         return queryset
 
 
-class StudentCreateView(CreateView):
+class StudentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # only teacher can create student
+
+    permission_required = "Student.add_student"
 
     model = Student
     form_class = StudentForm
