@@ -5,16 +5,33 @@ from django.urls import reverse_lazy
 from .forms import TeacherProfileForm
 from .models import Teacher, Subject
 from Student.models import Student
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 class TeacherDashboardView(LoginRequiredMixin, TemplateView):
 
     template_name = "Teacher/dashboard.html"
 
+    def dispatch(self, request, *args, **kwargs):
+
+        if not request.user.groups.filter(name="Teacher").exists():
+
+            messages.error(
+                request,
+                "Only teachers can access this page."
+            )
+
+            return redirect("home")
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
 
         teacher = Teacher.objects.get(user=self.request.user)
+
         context["teacher"] = teacher
         context["student_count"] = Student.objects.count()
         context["teacher_count"] = Teacher.objects.count()
