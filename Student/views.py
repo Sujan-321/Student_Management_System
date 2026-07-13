@@ -195,11 +195,25 @@ class StudentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
         return super().form_valid(form)
 
 
-class StudentDetailView(DetailView):
+class StudentDetailView(LoginRequiredMixin, DetailView):
 
     model = Student
     template_name = "Student/student_detail.html"
     context_object_name = "student"
+
+    def get_object(self):
+
+        obj = super().get_object()
+
+        user = self.request.user
+
+        # Student can only view their own record
+        if hasattr(user, "student_profile"):
+
+            if obj != user.student_profile:
+                raise Http404("You cannot view another student's profile.")
+
+        return obj
 
 
 class StudentDeleteView(DeleteView):
@@ -436,10 +450,12 @@ class MarkUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ResultSheetView(TemplateView):
+class ResultSheetView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     """
     Display the result sheet of a selected exam.
     """
+
+    permission_required = "Student.view_mark"
 
     template_name = "Student/marks/result_sheet.html"
 
