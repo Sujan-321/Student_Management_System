@@ -133,7 +133,7 @@ class StudentListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
 
-        queryset = Student.objects.all().order_by("roll_number")
+        queryset = Student.objects.all().order_by("rank")
 
         search = self.request.GET.get("search")
 
@@ -147,7 +147,7 @@ class StudentListView(LoginRequiredMixin, ListView):
 
                 Q(first_name__icontains=search) |
                 Q(last_name__icontains=search) |
-                Q(roll_number__icontains=search) |
+                Q(rank__icontains=search) |
                 Q(registration_number__icontains=search)
 
             )
