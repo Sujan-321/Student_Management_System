@@ -264,6 +264,23 @@ class AttendanceListView(ListView):
     context_object_name = "attendances"
     ordering = ["-attendance_date", "student"]
 
+    def get_queryset(self):
+
+        queryset = Attendance.objects.select_related(
+            "student",
+            "teacher",
+            "subject",
+        )
+
+        user = self.request.user
+
+        # Student
+        if hasattr(user, "student_profile"):
+            return queryset.filter(student=user.student_profile)
+
+        # Teacher / Admin
+        return queryset
+
 
 class AttendanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
