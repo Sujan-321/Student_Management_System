@@ -274,7 +274,7 @@ class AttendanceListView(LoginRequiredMixin, ListView):
     """
 
     model = Attendance
-    template_name = "Student/attendance/attendance_list.html"
+    template_name = "attendance/attendance_list.html"
     context_object_name = "attendances"
     ordering = ["-attendance_date", "student"]
 
@@ -392,7 +392,7 @@ class MarkListView(LoginRequiredMixin, ListView):
     """
 
     model = Mark
-    template_name = "Student/marks/mark_list.html"
+    template_name = "marks/mark_list.html"
     context_object_name = "marks"
     ordering = [
         "student__first_name",
@@ -534,7 +534,7 @@ class ExamListView(ListView):
     """
 
     model = Exam
-    template_name = "Student/exam/exam_list.html"
+    template_name = "exam/exam_list.html"
     context_object_name = "exams"
     ordering = [
         "-start_date",
@@ -587,7 +587,7 @@ class ClassRoomListView(ListView):
     """
 
     model = ClassRoom
-    template_name = "Student/classroom/classroom_list.html"
+    template_name = "classroom/classroom_list.html"
     context_object_name = "classrooms"
     ordering = [
         "name",
@@ -602,7 +602,7 @@ class ClassRoomCreateView(CreateView):
 
     model = ClassRoom
     form_class = ClassRoomForm
-    template_name = "Student/classroom/classroom_create.html"
+    template_name = "classroom/classroom_create.html"
     success_url = reverse_lazy("classroom_list")
 
     def form_valid(self, form):
