@@ -254,7 +254,7 @@ class DepartmentUpdateView(UpdateView):
 
 # working on attendance
 
-class AttendanceListView(ListView):
+class AttendanceListView(LoginRequiredMixin, ListView):
     """
     Display all attendance records.
     """
@@ -372,7 +372,7 @@ class AttendanceReportView(TemplateView):
 
 # here we start the marks features
 
-class MarkListView(ListView):
+class MarkListView(LoginRequiredMixin, ListView):
     """
     Display all student marks.
     """
@@ -384,6 +384,22 @@ class MarkListView(ListView):
         "student__first_name",
         "subject__sub_name",
     ]
+
+    def get_queryset(self):
+
+        queryset = Mark.objects.select_related(
+            "student",
+            "teacher",
+            "subject",
+            "exam",
+        )
+
+        user = self.request.user
+
+        if hasattr(user, "student_profile"):
+            return queryset.filter(student=user.student_profile)
+
+        return queryset
 
 
 class MarkCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
