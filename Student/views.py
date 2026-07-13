@@ -466,7 +466,7 @@ class ResultSheetView(TemplateView):
         return context
 
 
-class TranscriptView(TemplateView):
+class TranscriptView(LoginRequiredMixin, TemplateView):
     """
     Display the complete academic transcript of a student.
     """
@@ -474,17 +474,25 @@ class TranscriptView(TemplateView):
     template_name = "Student/marks/transcript.html"
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
 
-        student = get_object_or_404(
-            Student,
-            pk=self.kwargs["student_id"],
-        )
+        user = self.request.user
+
+        # Student can view only own transcript
+        if hasattr(user, "student_profile"):
+
+            student = user.student_profile
+
+        else:
+
+            student = get_object_or_404(
+                Student,
+                pk=self.kwargs["student_id"],
+            )
 
         marks = (
-            Mark.objects.filter(
-                student=student
-            )
+            Mark.objects.filter(student=student)
             .select_related(
                 "subject",
                 "exam",
