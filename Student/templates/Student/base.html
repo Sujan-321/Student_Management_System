@@ -1,53 +1,353 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Ledger{% endblock %}</title>
 
-    <meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<style>
+  :root{
+    --ink:        #1F2A24;
+    --paper:      #F1F3ED;
+    --paper-dim:  #E7EBE1;
+    --forest:     #24413A;
+    --forest-lt:  #345C50;
+    --gold:       #D9A62E;
+    --brick:      #C1502E;
+    --slate:      #3E5C76;
+    --line:       #D8DDD3;
+    --white:      #FFFFFF;
 
-    <title>Student Management</title>
+    --font-display: 'Fraunces', serif;
+    --font-body:    'Inter', sans-serif;
+    --font-mono:    'IBM Plex Mono', monospace;
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    --radius: 4px;
+  }
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:15px;
+    line-height:1.55;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
 
+  h1,h2,h3,h4{
+    font-family:var(--font-display);
+    color:var(--forest);
+    margin:0 0 .4em 0;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  a{ color:var(--slate); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+
+  :focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:2px;
+  }
+
+  .mono{ font-family:var(--font-mono); }
+
+  /* ---------- NAVBAR ---------- */
+  .navbar{
+    background:var(--forest);
+    color:var(--paper);
+    border-bottom:3px solid var(--gold);
+  }
+  .navbar-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:64px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--font-display);
+    font-size:1.25rem;
+    font-weight:700;
+    color:var(--paper);
+    letter-spacing:-0.01em;
+  }
+  .brand:hover{ text-decoration:none; opacity:.9; }
+  .brand-mark{
+    width:30px; height:30px;
+    border-radius:50%;
+    border:2px dashed var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono);
+    font-size:.7rem;
+    color:var(--gold);
+    transform:rotate(-8deg);
+    flex-shrink:0;
+  }
+
+  .nav-links{
+    list-style:none;
+    display:flex;
+    gap:4px;
+    margin:0; padding:0;
+  }
+  .nav-links a{
+    color:var(--paper);
+    font-size:.88rem;
+    font-weight:500;
+    padding:8px 12px;
+    border-radius:var(--radius);
+    transition:background .15s ease, color .15s ease;
+  }
+  .nav-links a:hover{
+    background:var(--forest-lt);
+    text-decoration:none;
+  }
+  .nav-links a.active{
+    background:var(--gold);
+    color:var(--forest);
+  }
+
+  .nav-user{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-size:.85rem;
+  }
+  .nav-user form{ margin:0; }
+  .nav-user button{
+    background:none;
+    border:1px solid var(--forest-lt);
+    color:var(--paper);
+    font-family:var(--font-body);
+    font-size:.82rem;
+    padding:6px 12px;
+    border-radius:var(--radius);
+    cursor:pointer;
+  }
+  .nav-user button:hover{ background:var(--forest-lt); }
+
+  .nav-toggle{
+    display:none;
+    background:none;
+    border:none;
+    color:var(--paper);
+    font-size:1.5rem;
+    cursor:pointer;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .page{
+    max-width:1180px;
+    margin:0 auto;
+    padding:32px 24px 64px;
+    width:100%;
+    flex:1;
+  }
+
+  .messages{
+    list-style:none;
+    margin:0 0 24px 0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .messages li{
+    padding:12px 16px;
+    border-radius:var(--radius);
+    font-size:.9rem;
+    border-left:3px solid var(--forest);
+    background:var(--white);
+  }
+  .messages li.success{ border-left-color:#4C7A5C; }
+  .messages li.error{ border-left-color:var(--brick); }
+  .messages li.warning{ border-left-color:var(--gold); }
+
+  /* ---------- FOOTER ---------- */
+  .footer{
+    background:var(--forest);
+    color:var(--paper-dim);
+    border-top:3px solid var(--gold);
+    margin-top:auto;
+  }
+  .footer-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:32px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:24px;
+  }
+  .footer-brand{
+    font-family:var(--font-display);
+    font-size:1.05rem;
+    color:var(--paper);
+    margin-bottom:6px;
+  }
+  .footer-tag{
+    font-size:.82rem;
+    color:var(--paper-dim);
+    opacity:.75;
+    max-width:280px;
+  }
+  .footer-links{
+    display:flex;
+    gap:32px;
+    flex-wrap:wrap;
+  }
+  .footer-col h4{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--gold);
+    margin-bottom:10px;
+  }
+  .footer-col ul{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .footer-col a{
+    color:var(--paper-dim);
+    font-size:.85rem;
+  }
+  .footer-bottom{
+    text-align:center;
+    font-size:.75rem;
+    color:var(--paper-dim);
+    opacity:.6;
+    padding:14px 24px;
+    border-top:1px solid var(--forest-lt);
+    font-family:var(--font-mono);
+  }
+
+  @media (max-width: 860px){
+    .nav-links{
+      position:absolute;
+      top:64px; left:0; right:0;
+      background:var(--forest);
+      flex-direction:column;
+      padding:8px;
+      display:none;
+      border-bottom:3px solid var(--gold);
+    }
+    .nav-links.open{ display:flex; }
+    .nav-toggle{ display:block; }
+    .navbar{ position:relative; }
+    .nav-user{ display:none; }
+  }
+</style>
+{% block extra_head %}{% endblock %}
 </head>
-
 <body>
 
-{% include "Student/partials/navbar.html" %}
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="{% url 'student_dashboard' %}" class="brand">
+      <span class="brand-mark">L</span> Ledger
+    </a>
 
-<div class="container-fluid">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
 
-    <div class="row">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="{% url 'student_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'student_list' %}">Students</a></li>
+      <li><a href="{% url 'attendance_list' %}">Attendance</a></li>
+      <li><a href="{% url 'mark_list' %}">Marks</a></li>
+      <li><a href="{% url 'exam_list' %}">Exams</a></li>
+      <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>
+      <li><a href="{% url 'department_list' %}">Departments</a></li>
+    </ul>
 
-        <div class="col-lg-2 bg-dark min-vh-100">
+    <div class="nav-user">
+      {% if user.is_authenticated %}
+        <a href="{% url 'student_profile' %}">{{ user.get_full_name|default:user.username }}</a>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Log out</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}">Log in</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
 
-            {% include "Student/partials/sidebar.html" %}
+<main class="page">
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
-        </div>
+  {% block content %}{% endblock %}
+</main>
 
-        <div class="col-lg-10 p-4">
-
-            {% block content %}
-
-            {% endblock %}
-
-        </div>
-
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Ledger</div>
+      <p class="footer-tag">A record-keeping system for students, attendance, marks and exams.</p>
     </div>
 
-</div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Records</h4>
+        <ul>
+          <li><a href="{% url 'student_list' %}">Students</a></li>
+          <li><a href="{% url 'attendance_list' %}">Attendance</a></li>
+          <li><a href="{% url 'mark_list' %}">Marks</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Academics</h4>
+        <ul>
+          <li><a href="{% url 'exam_list' %}">Exams</a></li>
+          <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>
+          <li><a href="{% url 'department_list' %}">Departments</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="{% url 'student_profile' %}">My profile</a></li>
+          <li><a href="{% url 'student_dashboard' %}">Dashboard</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; {% now "Y" %} Ledger &mdash; Student Records System</div>
+</footer>
 
-{% include "Student/partials/footer.html" %}
+<script>
+  document.getElementById('navToggle').addEventListener('click', function(){
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-
+{% block extra_scripts %}{% endblock %}
 </body>
-
 </html>
