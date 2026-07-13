@@ -2,7 +2,12 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
-from django.contrib.auth.views import LoginView, LogoutView 
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import logout
+from django.views import View
+from django.shortcuts import redirect
+
 
 from django.contrib import messages
 from django.contrib.auth.views import (
@@ -38,7 +43,24 @@ class RegisterView(CreateView):
         return response
 
 
+class DeactivateAccountView(LoginRequiredMixin, View):
 
+    def post(self, request):
+
+        user = request.user
+
+        user.is_active = False
+
+        user.save()
+
+        logout(request)
+
+        messages.success(
+            request,
+            "Your account has been deactivated."
+        )
+
+        return redirect("home")
 
 class UserLoginView(LoginView):
     template_name = "accounts/login.html"
