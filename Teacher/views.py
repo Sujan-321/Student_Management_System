@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import TemplateView, UpdateView, ListView, CreateView
+from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DeleteView
 from django.urls import reverse_lazy
-
 from .forms import TeacherProfileForm, AssignmentForm
 from .models import Teacher, Subject, Post
 from Student.models import Student
@@ -126,4 +125,23 @@ class AssignmentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVi
         )
 
         return super().form_valid(form)
+
+class AssignmentDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+
+    permission_required = "Teacher.delete_post"
+
+    model = Post
+    template_name = "Teacher/assignment_delete.html"
+    success_url = reverse_lazy("assignment_list")
+
+    def form_valid(self, form):
+
+        messages.success(
+            self.request,
+            "Assignment deleted successfully."
+        )
+
+        return super().form_valid(form)
+
+
 
