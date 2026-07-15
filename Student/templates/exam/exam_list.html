@@ -1,5 +1,5 @@
 {% extends "Student/base.html" %}
-
+{% load group_tags %}
 {% block title %}Examinations{% endblock %}
 
 {% block content %}
@@ -9,10 +9,13 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
 
         <h2>Examinations</h2>
+        {% if request.user|is_teacher %}
 
+        
         <a href="{% url 'exam_create' %}" class="btn btn-primary">
             Add Examination
         </a>
+        {% endif %}
 
     </div>
 
@@ -22,14 +25,16 @@
 
             <tr>
 
-                <th>#</th>
+                <th>S.N.</th>
                 <th>Exam Name</th>
                 <th>Exam Type</th>
                 <th>Department</th>
                 <th>Classroom</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                {% if request.user|is_teacher %}
                 <th>Actions</th>
+                {% endif %}
 
             </tr>
 
@@ -48,15 +53,17 @@
                 <td>{{ exam.classroom }}</td>
                 <td>{{ exam.start_date }}</td>
                 <td>{{ exam.end_date }}</td>
-
+                {% if request.user|is_teacher %}
+                
                 <td>
-
+                    
                     <a href="{% url 'exam_update' exam.pk %}"
-                       class="btn btn-warning btn-sm">
+                        class="btn btn-warning btn-sm">
                         Edit
                     </a>
-
+                    
                 </td>
+                {% endif %}
 
             </tr>
 
