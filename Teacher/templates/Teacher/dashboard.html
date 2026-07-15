@@ -1,103 +1,228 @@
-{% extends "Teacher/base.html" %}
+{% extends "base.html" %}
+
+{% block title %}Dashboard · Ledger{% endblock %}
+
+{% block extra_head %}
+<style>
+  .dash-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:32px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .dash-header .eyebrow{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--slate);
+    margin-bottom:6px;
+  }
+  .dash-header h1{ margin:0; font-size:2rem; }
+  .dash-header .badge{
+    font-family:var(--font-mono);
+    font-size:.85rem;
+    color:var(--forest-lt);
+    background:var(--paper-dim);
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:var(--radius);
+  }
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+    margin-bottom:40px;
+  }
+  @media (max-width:900px){ .stat-grid{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:520px){ .stat-grid{ grid-template-columns:1fr; } }
+
+  .stat-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-card::before{
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:4px; height:100%;
+    background:var(--forest);
+  }
+  .stat-card.gold::before{ background:var(--gold); }
+  .stat-card.slate::before{ background:var(--slate); }
+
+  .stat-label{
+    font-family:var(--font-mono);
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    color:var(--ink);
+    opacity:.6;
+    margin-bottom:10px;
+  }
+  .stat-value{
+    font-family:var(--font-display);
+    font-size:2.4rem;
+    font-weight:600;
+    color:var(--forest);
+    line-height:1;
+  }
+
+  .stamp{
+    position:absolute;
+    top:16px; right:16px;
+    width:46px; height:46px;
+    border-radius:50%;
+    border:2px dashed var(--gold);
+    transform:rotate(9deg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--font-mono);
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    color:var(--gold);
+    text-align:center;
+    opacity:.85;
+  }
+
+  .panel-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:24px;
+  }
+  @media (max-width:860px){ .panel-grid{ grid-template-columns:1fr; } }
+
+  .panel{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px;
+  }
+  .panel h2{
+    font-size:1.15rem;
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .panel h2::before{
+    content:"";
+    display:inline-block;
+    width:8px; height:8px;
+    background:var(--gold);
+    border-radius:50%;
+  }
+
+  .profile-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:.9rem;
+  }
+  .profile-row:last-child{ border-bottom:none; }
+  .profile-row dt{ color:var(--ink); opacity:.6; }
+  .profile-row dd{ margin:0; font-family:var(--font-mono); color:var(--forest); }
+
+  .quick-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .quick-links a{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-size:.88rem;
+    color:var(--ink);
+    font-weight:500;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .quick-links a:hover{
+    border-color:var(--gold);
+    background:var(--paper-dim);
+    text-decoration:none;
+  }
+  .quick-links a span.arrow{
+    font-family:var(--font-mono);
+    color:var(--gold);
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<h2 class="mb-4">
-    Welcome, {{ teacher.user }}
-</h2>
-
-<div class="row g-4">
-
-    <div class="col-md-4">
-        <div class="card shadow text-center">
-            <div class="card-body">
-
-                <h5>Total Students</h5>
-
-                <h2>{{ student_count }}</h2>
-
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card shadow text-center">
-            <div class="card-body">
-
-                <h5>Total Teachers</h5>
-
-                <h2>{{ teacher_count }}</h2>
-
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card shadow text-center">
-            <div class="card-body">
-
-                <h5>Total Subjects</h5>
-
-                <h2>{{ subject_count }}</h2>
-
-            </div>
-        </div>
-    </div>
-    
-
+<div class="dash-header">
+  <div>
+    <div class="eyebrow">Teacher Dashboard</div>
+    <h1>Welcome back, {{ teacher.first_name }}</h1>
+  </div>
+  <div class="badge">{{ teacher.employee_id|default:"Staff" }}</div>
 </div>
 
-<hr class="my-5">
+<div class="stat-grid">
+  <div class="stat-card gold">
+    <div class="stamp">Total</div>
+    <div class="stat-label">Students enrolled</div>
+    <div class="stat-value mono">{{ student_count }}</div>
+  </div>
 
-<div class="card shadow">
+  <div class="stat-card slate">
+    <div class="stat-label">Teaching staff</div>
+    <div class="stat-value mono">{{ teacher_count }}</div>
+  </div>
 
-    <div class="card-body">
+  <div class="stat-card">
+    <div class="stat-label">Subjects offered</div>
+    <div class="stat-value mono">{{ subject_count }}</div>
+  </div>
+</div>
 
-        <div class="row">
+<div class="panel-grid">
+  <div class="panel">
+    <h2>Profile summary</h2>
+    <dl>
+      <div class="profile-row">
+        <dt>Name</dt>
+        <dd>{{ teacher.first_name }} {{ teacher.last_name }}</dd>
+      </div>
+      <div class="profile-row">
+        <dt>Department</dt>
+        <dd>{{ teacher.department|default:"—" }}</dd>
+      </div>
+      <div class="profile-row">
+        <dt>Email</dt>
+        <dd>{{ teacher.email|default:teacher.user.email }}</dd>
+      </div>
+    </dl>
+    <p style="margin-top:16px;">
+      <a href="{% url 'teacher_profile' %}">Edit profile &rarr;</a>
+    </p>
+  </div>
 
-            <div class="col-md-3">
-
-                {% if teacher.image %}
-                <img src="{{ teacher.image.url }}"
-                     class="img-fluid rounded-circle"
-                     alt="image"
-                     height="250"
-                     width="250">
-                {% endif %}
-
-            </div>
-
-            <div class="col-md-9">
-
-                <h3>{{ teacher }}</h3>
-
-                <p>
-                    <strong>Email:</strong>
-                    {{ request.user.email }}
-                </p>
-
-                <p>
-                    <strong>Experience:</strong>
-                    {{ teacher.get_experience_display }}
-                </p>
-
-            </div>
-
-            <div class="alert alert-info">
-
-                Last Login
-
-                <strong>
-
-                    {{ request.user.last_login }}
-
-                </strong>
-
-            </div>
-
-        </div>
+  <div class="panel">
+    <h2>Quick links</h2>
+    <div class="quick-links">
+      <a href="{% url 'student_list' %}">View students <span class="arrow">&rarr;</span></a>
+      <a href="{% url 'attendance_list' %}">Mark attendance <span class="arrow">&rarr;</span></a>
+      <a href="{% url 'mark_list' %}">Enter marks <span class="arrow">&rarr;</span></a>
+      <a href="{% url 'exam_list' %}">Exam schedule <span class="arrow">&rarr;</span></a>
     </div>
-
+  </div>
 </div>
 
 {% endblock %}
