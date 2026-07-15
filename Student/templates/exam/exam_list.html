@@ -1,0 +1,83 @@
+{% extends "Student/base.html" %}
+
+{% block title %}Examinations{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Examinations</h2>
+
+        <a href="{% url 'exam_create' %}" class="btn btn-primary">
+            Add Examination
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>#</th>
+                <th>Exam Name</th>
+                <th>Exam Type</th>
+                <th>Department</th>
+                <th>Classroom</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for exam in exams %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+                <td>{{ exam.exam_name }}</td>
+                <td>{{ exam.exam_type }}</td>
+                <td>{{ exam.department }}</td>
+                <td>{{ exam.classroom }}</td>
+                <td>{{ exam.start_date }}</td>
+                <td>{{ exam.end_date }}</td>
+
+                <td>
+
+                    <a href="{% url 'exam_update' exam.pk %}"
+                       class="btn btn-warning btn-sm">
+                        Edit
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="8" class="text-center">
+
+                    No examinations found.
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

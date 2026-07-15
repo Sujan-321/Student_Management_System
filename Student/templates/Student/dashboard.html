@@ -1,0 +1,265 @@
+{% extends "Student/base.html" %}
+
+{% block title %}Dashboard · Ledger{% endblock %}
+
+{% block extra_head %}
+<style>
+  .dash-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:32px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .dash-header .eyebrow{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--slate);
+    margin-bottom:6px;
+  }
+  .dash-header h1{ margin:0; font-size:2rem; }
+  .dash-header .roll{
+    font-family:var(--font-mono);
+    font-size:.85rem;
+    color:var(--forest-lt);
+    background:var(--paper-dim);
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:var(--radius);
+  }
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:18px;
+    margin-bottom:40px;
+  }
+  @media (max-width:900px){ .stat-grid{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:520px){ .stat-grid{ grid-template-columns:1fr; } }
+
+  .stat-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-card::before{
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:4px; height:100%;
+    background:var(--forest);
+  }
+  .stat-card.gold::before{ background:var(--gold); }
+  .stat-card.brick::before{ background:var(--brick); }
+  .stat-card.slate::before{ background:var(--slate); }
+
+  .stat-label{
+    font-family:var(--font-mono);
+    font-size:.7rem;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    color:var(--ink);
+    opacity:.6;
+    margin-bottom:10px;
+  }
+  .stat-value{
+    font-family:var(--font-display);
+    font-size:2.4rem;
+    font-weight:600;
+    color:var(--forest);
+    line-height:1;
+  }
+
+  /* signature stamp badge */
+  .stamp{
+    position:absolute;
+    top:16px; right:16px;
+    width:46px; height:46px;
+    border-radius:50%;
+    border:2px dashed var(--gold);
+    transform:rotate(9deg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--font-mono);
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    color:var(--gold);
+    text-align:center;
+    opacity:.85;
+  }
+
+  .panel-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:24px;
+  }
+  @media (max-width:860px){ .panel-grid{ grid-template-columns:1fr; } }
+
+  .panel{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px;
+  }
+  .panel h2{
+    font-size:1.15rem;
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .panel h2::before{
+    content:"";
+    display:inline-block;
+    width:8px; height:8px;
+    background:var(--gold);
+    border-radius:50%;
+  }
+
+  .profile-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:.9rem;
+  }
+  .profile-row:last-child{ border-bottom:none; }
+  .profile-row dt{ color:var(--ink); opacity:.6; }
+  .profile-row dd{ margin:0; font-family:var(--font-mono); color:var(--forest); }
+
+  .empty-note{
+    font-size:.88rem;
+    color:var(--ink);
+    opacity:.7;
+    line-height:1.6;
+  }
+  .empty-note a{ color:var(--slate); font-weight:600; }
+
+  .quick-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .quick-links a{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-size:.88rem;
+    color:var(--ink);
+    font-weight:500;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .quick-links a:hover{
+    border-color:var(--gold);
+    background:var(--paper-dim);
+    text-decoration:none;
+  }
+  .quick-links a span.arrow{
+    font-family:var(--font-mono);
+    color:var(--gold);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="dash-header">
+  <div>
+    <div class="eyebrow">Student Dashboard</div>
+    <h1>
+      {% if student %}
+        Welcome back, {{ student.first_name }}
+      {% else %}
+        Welcome
+      {% endif %}
+    </h1>
+  </div>
+  {% if student %}
+    <div class="roll">Roll No. {{ student.rank }}</div>
+  {% endif %}
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card gold">
+    <div class="stamp">My<br>Rec.</div>
+    <div class="stat-label">Attendance records</div>
+    <div class="stat-value mono">{{ attendance_count }}</div>
+  </div>
+
+  <div class="stat-card slate">
+    <div class="stamp">My<br>Rec.</div>
+    <div class="stat-label">Mark entries</div>
+    <div class="stat-value mono">{{ mark_count }}</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Examinations scheduled</div>
+    <div class="stat-value mono">{{ exam_count }}</div>
+  </div>
+
+  <div class="stat-card brick">
+    <div class="stat-label">Teaching staff</div>
+    <div class="stat-value mono">{{ teacher_count }}</div>
+  </div>
+</div>
+
+<div class="panel-grid">
+  <div class="panel">
+    <h2>Profile summary</h2>
+
+    {% if student %}
+      <dl>
+        <div class="profile-row">
+          <dt>Name</dt>
+          <dd>{{ student.first_name }} {{ student.last_name }}</dd>
+        </div>
+        <div class="profile-row">
+          <dt>Registration No.</dt>
+          <dd>{{ student.registration_no }}</dd>
+        </div>
+        <div class="profile-row">
+          <dt>Department</dt>
+          <dd>{{ student.department|default:"—" }}</dd>
+        </div>
+        <div class="profile-row">
+          <dt>Status</dt>
+          <dd>{{ student.status|default:"—" }}</dd>
+        </div>
+      </dl>
+      <p style="margin-top:16px;">
+        <a href="{% url 'student_profile' %}">View full profile &rarr;</a>
+      </p>
+    {% else %}
+      <p class="empty-note">
+        No student profile is linked to your account yet. Contact administration
+        if you believe this is a mistake, or
+        <a href="{% url 'student_profile_edit' %}">complete your profile</a>.
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    <h2>Quick links</h2>
+    <div class="quick-links">
+      <a href="{% url 'attendance_list' %}">My attendance <span class="arrow">&rarr;</span></a>
+      <a href="{% url 'mark_list' %}">My marks <span class="arrow">&rarr;</span></a>
+      <a href="{% url 'exam_list' %}">Exam schedule <span class="arrow">&rarr;</span></a>
+      <a href="{% url 'student_profile_edit' %}">Edit my profile <span class="arrow">&rarr;</span></a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "Student/base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Attendance Details</h2>
+
+    <table class="table table-bordered">
+
+        <tr>
+            <th>Student</th>
+            <td>{{ attendance.student }}</td>
+        </tr>
+
+        <tr>
+            <th>Teacher</th>
+            <td>{{ attendance.teacher }}</td>
+        </tr>
+
+        <tr>
+            <th>Subject</th>
+            <td>{{ attendance.subject }}</td>
+        </tr>
+
+        <tr>
+            <th>Date</th>
+            <td>{{ attendance.attendance_date }}</td>
+        </tr>
+
+        <tr>
+            <th>Status</th>
+            <td>{{ attendance.status }}</td>
+        </tr>
+
+        <tr>
+            <th>Remarks</th>
+            <td>{{ attendance.remarks|default:"-" }}</td>
+        </tr>
+
+    </table>
+
+    <a href="{% url 'attendance_list' %}" class="btn btn-secondary">
+        Back
+    </a>
+
+</div>
+
+{% endblock %}

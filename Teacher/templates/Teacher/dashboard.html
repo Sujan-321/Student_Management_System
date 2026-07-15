@@ -1,0 +1,103 @@
+{% extends "Teacher/base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Welcome, {{ teacher.user }}
+</h2>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="card shadow text-center">
+            <div class="card-body">
+
+                <h5>Total Students</h5>
+
+                <h2>{{ student_count }}</h2>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow text-center">
+            <div class="card-body">
+
+                <h5>Total Teachers</h5>
+
+                <h2>{{ teacher_count }}</h2>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow text-center">
+            <div class="card-body">
+
+                <h5>Total Subjects</h5>
+
+                <h2>{{ subject_count }}</h2>
+
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+
+<hr class="my-5">
+
+<div class="card shadow">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-3">
+
+                {% if teacher.image %}
+                <img src="{{ teacher.image.url }}"
+                     class="img-fluid rounded-circle"
+                     alt="image"
+                     height="250"
+                     width="250">
+                {% endif %}
+
+            </div>
+
+            <div class="col-md-9">
+
+                <h3>{{ teacher }}</h3>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ request.user.email }}
+                </p>
+
+                <p>
+                    <strong>Experience:</strong>
+                    {{ teacher.get_experience_display }}
+                </p>
+
+            </div>
+
+            <div class="alert alert-info">
+
+                Last Login
+
+                <strong>
+
+                    {{ request.user.last_login }}
+
+                </strong>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
