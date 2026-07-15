@@ -79,11 +79,14 @@ class TeacherProfileView(LoginRequiredMixin, UpdateView):
 
 
 class AssignmentListView(LoginRequiredMixin, ListView):
-
     model = Post
     template_name = "Teacher/assignment_list.html"
     context_object_name = "assignments"
     ordering = ["-created_at"]
+
+    def get_queryset(self):
+        teacher = Teacher.objects.get(user=self.request.user)
+        return Post.objects.filter(teacher=teacher).order_by("-created_at")
 
 
 class AssignmentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
