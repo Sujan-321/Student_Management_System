@@ -1,19 +1,156 @@
-{% extends "Teacher/base.html" %}
+{% extends "base.html" %}
+
+{% block title %}My Profile · Ledger{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-header{
+    margin-bottom:28px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .form-header .eyebrow{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--slate);
+    margin-bottom:6px;
+  }
+  .form-header h1{ margin:0; font-size:1.9rem; }
+  .form-header p{
+    margin:8px 0 0;
+    color:var(--ink);
+    opacity:.65;
+    font-size:.9rem;
+  }
+
+  .form-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+    max-width:620px;
+  }
+
+  .field{
+    margin-bottom:20px;
+  }
+  .field label{
+    display:block;
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--forest);
+    margin-bottom:6px;
+  }
+  .field input,
+  .field select,
+  .field textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--paper);
+    font-family:var(--font-body);
+    font-size:.92rem;
+    color:var(--ink);
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus{
+    outline:none;
+    border-color:var(--gold);
+    background:var(--white);
+  }
+  .field .helptext{
+    font-size:.78rem;
+    color:var(--ink);
+    opacity:.55;
+    margin-top:4px;
+  }
+  .field .errorlist{
+    list-style:none;
+    margin:6px 0 0;
+    padding:0;
+    color:var(--brick);
+    font-size:.8rem;
+  }
+
+  .form-actions{
+    display:flex;
+    gap:12px;
+    margin-top:8px;
+    padding-top:20px;
+    border-top:1px dashed var(--line);
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 20px;
+    border-radius:var(--radius);
+    font-size:.88rem;
+    font-weight:600;
+    cursor:pointer;
+    border:1px solid transparent;
+    font-family:var(--font-body);
+  }
+  .btn-primary{
+    background:var(--forest);
+    color:var(--paper);
+  }
+  .btn-primary:hover{
+    background:var(--forest-lt);
+    text-decoration:none;
+  }
+  .btn-ghost{
+    background:transparent;
+    border-color:var(--line);
+    color:var(--ink);
+  }
+  .btn-ghost:hover{
+    border-color:var(--forest);
+    text-decoration:none;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<h3>Teacher Profile</h3>
+<div class="form-header">
+  <div class="eyebrow">Account</div>
+  <h1>My profile</h1>
+  <p>Update your personal and contact details below.</p>
+</div>
 
-<form method="post" enctype="multipart/form-data">
-
+<div class="form-card">
+  <form method="post" novalidate>
     {% csrf_token %}
 
-    {{ form.as_p }}
+    {% for field in form %}
+      <div class="field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <div class="helptext">{{ field.help_text }}</div>
+        {% endif %}
+        {% if field.errors %}
+          <ul class="errorlist">
+            {% for error in field.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endfor %}
 
-    <button type="submit">
-        Update
-    </button>
-
-</form>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <a href="{% url 'teacher_dashboard' %}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
 
 {% endblock %}
