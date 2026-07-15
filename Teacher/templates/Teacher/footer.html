@@ -1,11 +1,41 @@
-<footer class="text-center mt-5 mb-3">
+{% load group_filters %}
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Ledger</div>
+      <p class="footer-tag">A record-keeping system for students, attendance, marks and exams.</p>
+    </div>
 
-    <hr>
-
-    <p>
-
-        Student Management System
-
-    </p>
-
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Records</h4>
+        <ul>
+          <li><a href="{% url 'student_list' %}">Students</a></li>
+          <li><a href="{% url 'attendance_list' %}">Attendance</a></li>
+          <li><a href="{% url 'mark_list' %}">Marks</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Academics</h4>
+        <ul>
+          <li><a href="{% url 'exam_list' %}">Exams</a></li>
+          <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>
+          <li><a href="{% url 'department_list' %}">Departments</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          {% if request.user|has_group:"Teacher" %}
+            <li><a href="{% url 'teacher_profile' %}">My profile</a></li>
+            <li><a href="{% url 'teacher_dashboard' %}">Dashboard</a></li>
+          {% else %}
+            <li><a href="{% url 'student_profile' %}">My profile</a></li>
+            <li><a href="{% url 'student_dashboard' %}">Dashboard</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; {% now "Y" %} Ledger &mdash; Student Records System</div>
 </footer>
