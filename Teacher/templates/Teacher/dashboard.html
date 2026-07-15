@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "Teacher/base.html" %}
 
 {% block title %}Dashboard · Ledger{% endblock %}
 
@@ -169,7 +169,7 @@
 <div class="dash-header">
   <div>
     <div class="eyebrow">Teacher Dashboard</div>
-    <h1>Welcome back, {{ teacher.first_name }}</h1>
+    <h1>Welcome back, {{ teacher.user.first_name }}</h1>
   </div>
   <div class="badge">{{ teacher.employee_id|default:"Staff" }}</div>
 </div>
@@ -198,7 +198,7 @@
     <dl>
       <div class="profile-row">
         <dt>Name</dt>
-        <dd>{{ teacher.first_name }} {{ teacher.last_name }}</dd>
+        <dd>{{ teacher.user.first_name }} {{ teacher.user.last_name }}</dd>
       </div>
       <div class="profile-row">
         <dt>Department</dt>

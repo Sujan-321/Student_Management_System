@@ -1,54 +1,3 @@
-# from django.urls import reverse_lazy
-# from django.views.generic import *
-
-# from .forms import StudentForm
-# from .models import Student
-
-
-# class StudentListView(ListView):
-
-#     model = Student
-#     template_name = "Student/student_list.html"
-#     context_object_name = "students"
-#     paginate_by = 10
-#     ordering = ["id"]
-
-
-# class StudentCreateView(CreateView):
-
-#     model = Student
-#     form_class = StudentForm
-#     template_name = "Student/student_create.html"
-#     success_url = reverse_lazy("student_list")
-
-
-# class StudentUpdateView(UpdateView):
-
-#     model = Student
-#     form_class = StudentForm
-#     template_name = "Student/student_update.html"
-#     success_url = reverse_lazy("student_list")
-
-
-# class StudentDetailView(DetailView):
-
-#     model = Student
-#     template_name = "Student/student_detail.html"
-#     context_object_name = "student"
-
-
-# class StudentDeleteView(DeleteView):
-
-#     model = Student
-#     template_name = "Student/student_delete.html"
-#     success_url = reverse_lazy("student_list")
-
-
-
-
-
-
-
 from django.contrib import messages
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
@@ -234,7 +183,7 @@ class StudentDeleteView(DeleteView):
 
 class DepartmentListView(ListView):
     model = Department
-    template_name = "Student/department/department_list.html"
+    template_name = "department/department_list.html"
     context_object_name = "departments"
     ordering = ["name"]
 
@@ -242,7 +191,7 @@ class DepartmentListView(ListView):
 class DepartmentCreateView(CreateView):
     model = Department
     form_class = DepartmentForm
-    template_name = "Student/department/department_create.html"
+    template_name = "department/department_create.html"
     success_url = reverse_lazy("department_list")
 
     def form_valid(self, form):
@@ -256,7 +205,7 @@ class DepartmentCreateView(CreateView):
 class DepartmentUpdateView(UpdateView):
     model = Department
     form_class = DepartmentForm
-    template_name = "Student/department/department_update.html"
+    template_name = "department/department_update.html"
     success_url = reverse_lazy("department_list")
 
     def form_valid(self, form):
@@ -303,7 +252,7 @@ class AttendanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVi
 
     model = Attendance
     form_class = AttendanceForm
-    template_name = "Student/attendance/attendance_create.html"
+    template_name = "attendance/attendance_create.html"
     success_url = reverse_lazy("attendance_list")
 
     def form_valid(self, form):
@@ -321,7 +270,7 @@ class AttendanceUpdateView(UpdateView):
 
     model = Attendance
     form_class = AttendanceForm
-    template_name = "Student/attendance/attendance_update.html"
+    template_name = "attendance/attendance_update.html"
     success_url = reverse_lazy("attendance_list")
 
     def form_valid(self, form):
@@ -338,7 +287,7 @@ class AttendanceDetailView(DetailView):
     """
 
     model = Attendance
-    template_name = "Student/attendance/attendance_detail.html"
+    template_name = "attendance/attendance_detail.html"
     context_object_name = "attendance"
 
 
@@ -347,7 +296,7 @@ class AttendanceReportView(TemplateView):
     Display attendance summary grouped by student and subject.
     """
 
-    template_name = "Student/attendance/attendance_report.html"
+    template_name = "attendance/attendance_report.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -422,7 +371,7 @@ class MarkCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     model = Mark
     form_class = MarkForm
-    template_name = "Student/marks/mark_create.html"
+    template_name = "marks/mark_create.html"
     success_url = reverse_lazy("mark_list")
 
     def form_valid(self, form):
@@ -440,7 +389,7 @@ class MarkUpdateView(UpdateView):
 
     model = Mark
     form_class = MarkForm
-    template_name = "Student/marks/mark_update.html"
+    template_name = "marks/mark_update.html"
     success_url = reverse_lazy("mark_list")
 
     def form_valid(self, form):
@@ -458,7 +407,7 @@ class ResultSheetView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView)
 
     permission_required = "Student.view_mark"
 
-    template_name = "Student/marks/result_sheet.html"
+    template_name = "marks/result_sheet.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -488,7 +437,7 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
     Display the complete academic transcript of a student.
     """
 
-    template_name = "Student/marks/transcript.html"
+    template_name = "marks/transcript.html"
 
     def get_context_data(self, **kwargs):
 
@@ -550,7 +499,7 @@ class ExamCreateView(CreateView):
 
     model = Exam
     form_class = ExamForm
-    template_name = "Student/exam/exam_create.html"
+    template_name = "exam/exam_create.html"
     success_url = reverse_lazy("exam_list")
 
     def form_valid(self, form):
@@ -569,7 +518,7 @@ class ExamUpdateView(UpdateView):
 
     model = Exam
     form_class = ExamForm
-    template_name = "Student/exam/exam_update.html"
+    template_name = "exam/exam_update.html"
     success_url = reverse_lazy("exam_list")
 
     def form_valid(self, form):
@@ -621,7 +570,7 @@ class ClassRoomUpdateView(UpdateView):
 
     model = ClassRoom
     form_class = ClassRoomForm
-    template_name = "Student/classroom/classroom_update.html"
+    template_name = "classroom/classroom_update.html"
     success_url = reverse_lazy("classroom_list")
 
     def form_valid(self, form):
