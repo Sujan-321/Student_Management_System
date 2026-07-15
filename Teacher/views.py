@@ -1,12 +1,13 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import TemplateView, UpdateView, ListView, CreateView
 from django.urls import reverse_lazy
 
-from .forms import TeacherProfileForm
-from .models import Teacher, Subject
+from .forms import TeacherProfileForm, AssignmentForm
+from .models import Teacher, Subject, Post
 from Student.models import Student
 from django.contrib import messages
 from django.shortcuts import redirect
+from django import forms
 
 
 class TeacherDashboardView(LoginRequiredMixin, TemplateView):
@@ -74,3 +75,36 @@ class TeacherProfileView(LoginRequiredMixin, UpdateView):
     def get_object(self):
 
         return Teacher.objects.get(user=self.request.user)
+
+
+
+
+class AssignmentListView(LoginRequiredMixin, ListView):
+
+    model = Post
+    template_name = "Teacher/assignment_list.html"
+    context_object_name = "assignments"
+    ordering = ["-created_at"]
+
+
+class AssignmentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+
+    permission_required = "Teacher.add_post"
+
+    model = Post
+    form_class = AssignmentForm
+    template_name = "Teacher/assignment_create.html"
+    success_url = reverse_lazy("assignment_list")
+
+    def form_valid(self, form):
+
+        form.instance.teacher = Teacher.objects.get(
+            user=self.request.user
+        )
+
+        messages.success(
+            self.request,
+            "Assignment created successfully."
+        )
+
+        return super().form_valid(form)
