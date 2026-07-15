@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # from django.urls import reverse_lazy
 # from django.views.generic import *
 
@@ -50,7 +48,7 @@
 
 
 
->>>>>>> 0f13a1315549bf8329c66abfbbfc12654dfa0b16
+
 from django.contrib import messages
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
