@@ -108,3 +108,22 @@ class AssignmentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVi
         )
 
         return super().form_valid(form)
+
+class AssignmentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+
+    permission_required = "Teacher.change_post"
+
+    model = Post
+    form_class = AssignmentForm
+    template_name = "Teacher/assignment_update.html"
+    success_url = reverse_lazy("assignment_list")
+
+    def form_valid(self, form):
+
+        messages.success(
+            self.request,
+            "Assignment updated successfully."
+        )
+
+        return super().form_valid(form)
+

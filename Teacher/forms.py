@@ -1,15 +1,11 @@
 from django import forms
-from .models import Teacher
+from .models import Teacher, Post
 
 
 class TeacherProfileForm(forms.ModelForm):
     class Meta:
         model = Teacher
         exclude = ("user",)
-
-from django import forms
-from .models import Post
-
 
 class AssignmentForm(forms.ModelForm):
 
