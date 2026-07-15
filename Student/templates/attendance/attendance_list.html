@@ -1,4 +1,5 @@
 {% extends "Student/base.html" %}
+{% load group_tags %}
 
 {% block content %}
 
@@ -7,10 +8,12 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
 
         <h2>Attendance Records</h2>
+        {% if request.user|is_teacher %}
 
         <a href="{% url 'attendance_create' %}" class="btn btn-primary">
             Add Attendance
         </a>
+        {% endif %}
 
     </div>
 
@@ -18,13 +21,15 @@
 
         <thead class="table-dark">
             <tr>
-                <th>#</th>
+                <th>S.N.</th>
                 <th>Student</th>
                 <th>Teacher</th>
                 <th>Subject</th>
                 <th>Date</th>
                 <th>Status</th>
+                {% if request.user|is_teacher %}
                 <th>Actions</th>
+                {% endif %}
             </tr>
         </thead>
 
@@ -40,18 +45,19 @@
                 <td>{{ attendance.subject }}</td>
                 <td>{{ attendance.attendance_date }}</td>
                 <td>{{ attendance.status }}</td>
-
+                {% if request.user|is_teacher %}
                 <td>
-
+                    
                     <a href="{% url 'attendance_detail' attendance.pk %}" class="btn btn-sm btn-info">
                         View
                     </a>
-
+                    
                     <a href="{% url 'attendance_update' attendance.pk %}" class="btn btn-sm btn-warning">
                         Edit
                     </a>
-
+                    
                 </td>
+                {% endif %}
 
             </tr>
 
