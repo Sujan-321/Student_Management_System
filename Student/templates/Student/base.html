@@ -1,4 +1,5 @@
 {% load static %}
+{% load group_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -272,12 +273,13 @@
 
     <ul class="nav-links" id="navLinks">
       <li><a href="{% url 'student_dashboard' %}">Dashboard</a></li>
+      {% if request.user|is_teacher %}
+      <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>
       <li><a href="{% url 'student_list' %}">Students</a></li>
+      {% endif %}
       <li><a href="{% url 'attendance_list' %}">Attendance</a></li>
       <li><a href="{% url 'mark_list' %}">Marks</a></li>
       <li><a href="{% url 'exam_list' %}">Exams</a></li>
-      <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>
-      <li><a href="{% url 'department_list' %}">Departments</a></li>
     </ul>
 
     <div class="nav-user">
