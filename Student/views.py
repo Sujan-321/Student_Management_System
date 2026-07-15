@@ -2,11 +2,12 @@ from django.contrib import messages
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, TemplateView, DeleteView
-from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamForm, ClassRoomForm
-from .models import Student, Department, Attendance, Mark, Exam, ClassRoom, Teacher
+from .forms import StudentForm, DepartmentForm, AttendanceForm, MarkForm, ExamForm, ClassRoomForm, AssignmentSubmissionForm
+from .models import Student, Department, Attendance, Mark, Exam, ClassRoom, Teacher, AssignmentSubmission
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import Http404
+from Teacher.models import Post
 
 
 class StudentDashboardView(LoginRequiredMixin, TemplateView):
@@ -578,4 +579,46 @@ class ClassRoomUpdateView(UpdateView):
             self.request,
             "Classroom updated successfully."
         )
+        return super().form_valid(form)
+
+
+class AssignmentListView(LoginRequiredMixin, ListView):
+
+    model = Post
+
+    template_name = "Student/assignment_list.html"
+
+    context_object_name = "assignments"
+
+    ordering = [
+        "-created_at",
+    ]
+
+
+class AssignmentSubmitView(LoginRequiredMixin, CreateView):
+
+    model = AssignmentSubmission
+
+    form_class = AssignmentSubmissionForm
+
+    template_name = "Student/assignment_submit.html"
+
+    success_url = reverse_lazy(
+        "assignment_list"
+    )
+
+    def form_valid(self, form):
+
+        form.instance.student = self.request.user.student_profile
+
+        form.instance.assignment = get_object_or_404(
+            Post,
+            pk=self.kwargs["pk"],
+        )
+
+        messages.success(
+            self.request,
+            "Assignment submitted successfully."
+        )
+
         return super().form_valid(form)

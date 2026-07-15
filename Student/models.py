@@ -163,3 +163,32 @@ class Mark(TimeStampModel):
 
     def __str__(self):
         return f"{self.student} - {self.subject}"
+
+class AssignmentSubmission(TimeStampModel):
+
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="submissions"
+    )
+
+    assignment = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="submissions"
+    )
+
+    pdf = models.FileField(
+        upload_to="assignments/%Y/%m/%d/"
+    )
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (
+            "student",
+            "assignment",
+        )
+
+    def __str__(self):
+        return f"{self.student} - {self.assignment}"

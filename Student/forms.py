@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, Department, ClassRoom, Attendance, Exam, Mark
+from .models import Student, Department, ClassRoom, Attendance, Exam, Mark, AssignmentSubmission
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -40,3 +40,14 @@ class MarkForm(forms.ModelForm):
     class Meta:
         model = Mark
         fields = "__all__"
+    
+
+class AssignmentSubmissionForm(forms.ModelForm):
+
+    class Meta:
+
+        model = AssignmentSubmission
+
+        fields = [
+            "pdf",
+        ]
