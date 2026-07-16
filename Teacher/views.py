@@ -80,7 +80,7 @@ class TeacherProfileView(LoginRequiredMixin, UpdateView):
 
 class AssignmentListView(LoginRequiredMixin, ListView):
     model = Post
-    template_name = "Teacher/assignment_list.html"
+    template_name = "Teacher/assignment/assignment_list.html"
     context_object_name = "assignments"
     ordering = ["-created_at"]
 
@@ -95,7 +95,7 @@ class AssignmentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVi
 
     model = Post
     form_class = AssignmentForm
-    template_name = "Teacher/assignment_create.html"
+    template_name = "Teacher/assignment/assignment_create.html"
     success_url = reverse_lazy("assignment_list")
 
     def form_valid(self, form):
@@ -117,7 +117,7 @@ class AssignmentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVi
 
     model = Post
     form_class = AssignmentForm
-    template_name = "Teacher/assignment_update.html"
+    template_name = "Teacher/assignment/assignment_update.html"
     success_url = reverse_lazy("assignment_list")
 
     def form_valid(self, form):

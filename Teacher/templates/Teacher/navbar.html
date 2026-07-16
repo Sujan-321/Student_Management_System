@@ -11,17 +11,11 @@
       {% if request.user|has_group:"Teacher" %}
         <li><a href="{% url 'teacher_dashboard' %}">Dashboard</a></li>
         <li><a href="{% url 'student_list' %}">Students</a></li>
+        <li><a href="{% url 'assignment_list' %}">Assignment</a></li>
         <li><a href="{% url 'attendance_list' %}">Attendance</a></li>
         <li><a href="{% url 'mark_list' %}">Marks</a></li>
         <li><a href="{% url 'exam_list' %}">Exams</a></li>
-        <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>
-        <li><a href="{% url 'department_list' %}">Departments</a></li>
-      {% else %}
-        <li><a href="{% url 'student_dashboard' %}">Dashboard</a></li>
-        <li><a href="{% url 'student_list' %}">Students</a></li>
-        <li><a href="{% url 'attendance_list' %}">Attendance</a></li>
-        <li><a href="{% url 'mark_list' %}">Marks</a></li>
-        <li><a href="{% url 'exam_list' %}">Exams</a></li>
+        <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>      
       {% endif %}
     </ul>
 

@@ -586,7 +586,7 @@ class AssignmentListView(LoginRequiredMixin, ListView):
 
     model = Post
 
-    template_name = "Student/assignment_list.html"
+    template_name = "Teacher/assignment/assignment_list.html"
 
     context_object_name = "assignments"
 
