@@ -57,7 +57,7 @@ class TeacherProfileView(LoginRequiredMixin, UpdateView):
 
         return Teacher.objects.get(user=self.request.user)
 
-
+# working for Assignment
 class AssignmentListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = "Teacher/assignment/assignment_list.html"
@@ -67,7 +67,6 @@ class AssignmentListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         teacher = Teacher.objects.get(user=self.request.user)
         return Post.objects.filter(teacher=teacher).order_by("-created_at")
-
 
 class AssignmentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
@@ -127,7 +126,7 @@ class AssignmentDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVi
         return super().form_valid(form)
 
 
-
+# working on student feature
 class StudentListView(LoginRequiredMixin, ListView):
 
     model = Student
@@ -158,7 +157,6 @@ class StudentListView(LoginRequiredMixin, ListView):
 
         return queryset
 
-
 class StudentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # only teacher can create student
 
     permission_required = "Student.add_student"
@@ -174,14 +172,13 @@ class StudentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
 
         return super().form_valid(form)
 
-
 class StudentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
     permission_required = "Student.change_student"
 
     model = Student
     form_class = StudentForm
-    template_name = "Student/student_update.html"
+    template_name = "Teacher/student_update.html"
     success_url = reverse_lazy("student_list")
 
     def form_valid(self, form):
@@ -193,7 +190,7 @@ class StudentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 class StudentDetailView(LoginRequiredMixin, DetailView):
 
     model = Student
-    template_name = "Student/student_detail.html"
+    template_name = "Teacher/student_detail.html"
     context_object_name = "student"
 
     def get_object(self):
@@ -211,13 +208,14 @@ class StudentDetailView(LoginRequiredMixin, DetailView):
         return obj
 
 
+# working on Attendance
 class AttendanceListView(LoginRequiredMixin, ListView):
     """
     Display all attendance records.
     """
 
     model = Attendance
-    template_name = "attendance/attendance_list.html"
+    template_name = "Teacher/attendance/attendance_list.html"
     context_object_name = "attendances"
     ordering = ["-attendance_date", "student"]
 
@@ -238,14 +236,13 @@ class AttendanceListView(LoginRequiredMixin, ListView):
         # Teacher / Admin
         return queryset
 
-
 class AttendanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     permission_required = "Student.add_attendance"
 
     model = Attendance
     form_class = AttendanceForm
-    template_name = "attendance/attendance_create.html"
+    template_name = "Teacher/attendance/attendance_create.html"
     success_url = reverse_lazy("attendance_list")
 
     def form_valid(self, form):
@@ -255,7 +252,6 @@ class AttendanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateVi
         )
         return super().form_valid(form)
 
-
 class AttendanceUpdateView(UpdateView):
     """
     Update an existing attendance record.
@@ -263,7 +259,7 @@ class AttendanceUpdateView(UpdateView):
 
     model = Attendance
     form_class = AttendanceForm
-    template_name = "attendance/attendance_update.html"
+    template_name = "Teacher/attendance/attendance_update.html"
     success_url = reverse_lazy("attendance_list")
 
     def form_valid(self, form):
@@ -273,23 +269,21 @@ class AttendanceUpdateView(UpdateView):
         )
         return super().form_valid(form)
 
-
 class AttendanceDetailView(DetailView):
     """
     Display detailed information for a single attendance record.
     """
 
     model = Attendance
-    template_name = "attendance/attendance_detail.html"
+    template_name = "Teacher/attendance/attendance_detail.html"
     context_object_name = "attendance"
-
 
 class AttendanceReportView(TemplateView):
     """
     Display attendance summary grouped by student and subject.
     """
 
-    template_name = "attendance/attendance_report.html"
+    template_name = "Teacher/attendance/attendance_report.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -325,13 +319,15 @@ class AttendanceReportView(TemplateView):
 
         return context
 
+
+# working on Mark, result, and transcript
 class MarkListView(LoginRequiredMixin, ListView):
     """
     Display all student marks.
     """
 
     model = Mark
-    template_name = "marks/mark_list.html"
+    template_name = "Teacher/marks/mark_list.html"
     context_object_name = "marks"
     ordering = [
         "student__first_name",
@@ -354,13 +350,12 @@ class MarkListView(LoginRequiredMixin, ListView):
 
         return queryset
 
-
 class MarkCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = "Student.add_mark"
 
     model = Mark
     form_class = MarkForm
-    template_name = "marks/mark_create.html"
+    template_name = "Teacher/marks/mark_create.html"
     success_url = reverse_lazy("mark_list")
 
     def form_valid(self, form):
@@ -370,7 +365,6 @@ class MarkCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         )
         return super().form_valid(form)
 
-
 class MarkUpdateView(UpdateView):
     """
     Update an existing mark record.
@@ -378,7 +372,7 @@ class MarkUpdateView(UpdateView):
 
     model = Mark
     form_class = MarkForm
-    template_name = "marks/mark_update.html"
+    template_name = "Teacher/marks/mark_update.html"
     success_url = reverse_lazy("mark_list")
 
     def form_valid(self, form):
@@ -388,7 +382,6 @@ class MarkUpdateView(UpdateView):
         )
         return super().form_valid(form)
 
-
 class ResultSheetView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     """
     Display the result sheet of a selected exam.
@@ -396,7 +389,7 @@ class ResultSheetView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView)
 
     permission_required = "Student.view_mark"
 
-    template_name = "marks/result_sheet.html"
+    template_name = "Teacher/marks/result_sheet.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -420,13 +413,12 @@ class ResultSheetView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView)
 
         return context
 
-
 class TranscriptView(LoginRequiredMixin, TemplateView):
     """
     Display the complete academic transcript of a student.
     """
 
-    template_name = "marks/transcript.html"
+    template_name = "Teacher/marks/transcript.html"
 
     def get_context_data(self, **kwargs):
 
@@ -465,9 +457,6 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
         return context
 
 
-
-
-
 # working on exam feature
 
 class ExamListView(ListView):
@@ -476,13 +465,12 @@ class ExamListView(ListView):
     """
 
     model = Exam
-    template_name = "exam/exam_list.html"
+    template_name = "Teacher/exam/exam_list.html"
     context_object_name = "exams"
     ordering = [
         "-start_date",
         "exam_name",
     ]
-
 
 class ExamCreateView(CreateView):
     """
@@ -491,7 +479,7 @@ class ExamCreateView(CreateView):
 
     model = Exam
     form_class = ExamForm
-    template_name = "exam/exam_create.html"
+    template_name = "Teacher/exam/exam_create.html"
     success_url = reverse_lazy("exam_list")
 
     def form_valid(self, form):
@@ -501,7 +489,6 @@ class ExamCreateView(CreateView):
         )
         return super().form_valid(form)
 
-
 class ExamUpdateView(UpdateView):
 
     """
@@ -510,7 +497,7 @@ class ExamUpdateView(UpdateView):
 
     model = Exam
     form_class = ExamForm
-    template_name = "exam/exam_update.html"
+    template_name = "Teacher/exam/exam_update.html"
     success_url = reverse_lazy("exam_list")
 
     def form_valid(self, form):
@@ -519,52 +506,6 @@ class ExamUpdateView(UpdateView):
             "Examination updated successfully."
         )
         return super().form_valid(form)
-
-
-# working on Assignment
-
-class AssignmentListView(LoginRequiredMixin, ListView):
-
-    model = Post
-
-    template_name = "Teacher/assignment/assignment_list.html"
-
-    context_object_name = "assignments"
-
-    ordering = [
-        "-created_at",
-    ]
-
-
-
-class AssignmentSubmitView(LoginRequiredMixin, CreateView):
-
-    model = AssignmentSubmission
-
-    form_class = AssignmentSubmissionForm
-
-    template_name = "Student/assignment_submit.html"
-
-    success_url = reverse_lazy(
-        "assignment_list"
-    )
-
-    def form_valid(self, form):
-
-        form.instance.student = self.request.user.student_profile
-
-        form.instance.assignment = get_object_or_404(
-            Post,
-            pk=self.kwargs["pk"],
-        )
-
-        messages.success(
-            self.request,
-            "Assignment submitted successfully."
-        )
-
-        return super().form_valid(form)
-
 
 
 

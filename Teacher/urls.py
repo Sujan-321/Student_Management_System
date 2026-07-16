@@ -44,6 +44,8 @@ from .views import (
 urlpatterns = [
     path("dashboard/", TeacherDashboardView.as_view(), name="teacher_dashboard"),
     path("profile/", TeacherProfileView.as_view(), name="teacher_profile"),
+
+    # for assignment feature
     path("assignments/", AssignmentListView.as_view(), name="assignment_list"),
     path("assignments/create/", AssignmentCreateView.as_view(), name="assignment_create"),
     path("assignments/<int:pk>/update/", AssignmentUpdateView.as_view(), name="assignment_update"),
@@ -75,8 +77,5 @@ urlpatterns = [
     path("exam/", ExamListView.as_view(), name="exam_list"),
     path("exam/create/", ExamCreateView.as_view(), name="exam_create"),
     path("exam/<int:pk>/update/", ExamUpdateView.as_view(), name="exam_update"),
-
-    path("assignments/", AssignmentListView.as_view(), name="assignment_list"),
-    path("assignment/<int:pk>/submit/", AssignmentSubmitView.as_view(), name="assignment_submit"),
 
 ]
