@@ -7,6 +7,7 @@ from Student.models import Student
 from django.contrib import messages
 from django.shortcuts import redirect
 from django import forms
+from django.db.models import Q, Count
 
 
 class TeacherDashboardView(LoginRequiredMixin, TemplateView):
@@ -39,30 +40,6 @@ class TeacherDashboardView(LoginRequiredMixin, TemplateView):
 
         return context
 
-# from django.http import Http404
-
-# class TeacherDashboardView(LoginRequiredMixin, TemplateView):
-#     template_name = "Teacher/dashboard.html"
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-
-#         print("=" * 50)
-#         print("Logged in user:", self.request.user)
-#         print("User ID:", self.request.user.id)
-#         print("Username:", self.request.user.username)
-
-#         teachers = Teacher.objects.filter(user=self.request.user)
-
-#         print("Teacher queryset:", teachers)
-#         print("Teacher count:", teachers.count())
-
-#         if not teachers.exists():
-#             raise Http404("No Teacher profile found for this user.")
-
-#         context["teacher"] = teachers.first()
-#         return context
-
 
 class TeacherProfileView(LoginRequiredMixin, UpdateView):
 
@@ -74,8 +51,6 @@ class TeacherProfileView(LoginRequiredMixin, UpdateView):
     def get_object(self):
 
         return Teacher.objects.get(user=self.request.user)
-
-
 
 
 class AssignmentListView(LoginRequiredMixin, ListView):
@@ -158,31 +133,340 @@ class StudentListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
 
         queryset = Student.objects.all().order_by("rank")
-
         search = self.request.GET.get("search")
-
         department = self.request.GET.get("department")
-
         status = self.request.GET.get("status")
 
         if search:
-
             queryset = queryset.filter(
-
                 Q(first_name__icontains=search) |
                 Q(last_name__icontains=search) |
                 Q(rank__icontains=search) |
-                Q(registration_number__icontains=search)
-
+                Q(registration_no__icontains=search)
             )
 
         if department:
-
             queryset = queryset.filter(department_id=department)
 
         if status:
-
             queryset = queryset.filter(status=status)
 
         return queryset
+
+
+class StudentCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):  # only teacher can create student
+
+    permission_required = "Student.add_student"
+
+    model = Student
+    form_class = StudentForm
+    template_name = "Student/student_create.html"
+    success_url = reverse_lazy("student_list")
+
+    def form_valid(self, form):
+
+        messages.success(self.request, "Student added successfully.")
+
+        return super().form_valid(form)
+
+
+class StudentUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+
+    permission_required = "Student.change_student"
+
+    model = Student
+    form_class = StudentForm
+    template_name = "Student/student_update.html"
+    success_url = reverse_lazy("student_list")
+
+    def form_valid(self, form):
+
+        messages.success(self.request, "Student updated successfully.")
+
+        return super().form_valid(form)
+
+class StudentDetailView(LoginRequiredMixin, DetailView):
+
+    model = Student
+    template_name = "Student/student_detail.html"
+    context_object_name = "student"
+
+    def get_object(self):
+
+        obj = super().get_object()
+
+        user = self.request.user
+
+        # Student can only view their own record
+        if hasattr(user, "student_profile"):
+
+            if obj != user.student_profile:
+                raise Http404("You cannot view another student's profile.")
+
+        return obj
+
+
+class AttendanceListView(LoginRequiredMixin, ListView):
+    """
+    Display all attendance records.
+    """
+
+    model = Attendance
+    template_name = "attendance/attendance_list.html"
+    context_object_name = "attendances"
+    ordering = ["-attendance_date", "student"]
+
+    def get_queryset(self):
+
+        queryset = Attendance.objects.select_related(
+            "student",
+            "teacher",
+            "subject",
+        )
+
+        user = self.request.user
+
+        # Student
+        if hasattr(user, "student_profile"):
+            return queryset.filter(student=user.student_profile)
+
+        # Teacher / Admin
+        return queryset
+
+
+class AttendanceCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+
+    permission_required = "Student.add_attendance"
+
+    model = Attendance
+    form_class = AttendanceForm
+    template_name = "attendance/attendance_create.html"
+    success_url = reverse_lazy("attendance_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Attendance record has been created successfully."
+        )
+        return super().form_valid(form)
+
+
+class AttendanceUpdateView(UpdateView):
+    """
+    Update an existing attendance record.
+    """
+
+    model = Attendance
+    form_class = AttendanceForm
+    template_name = "attendance/attendance_update.html"
+    success_url = reverse_lazy("attendance_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Attendance record has been updated successfully."
+        )
+        return super().form_valid(form)
+
+
+class AttendanceDetailView(DetailView):
+    """
+    Display detailed information for a single attendance record.
+    """
+
+    model = Attendance
+    template_name = "attendance/attendance_detail.html"
+    context_object_name = "attendance"
+
+
+class AttendanceReportView(TemplateView):
+    """
+    Display attendance summary grouped by student and subject.
+    """
+
+    template_name = "attendance/attendance_report.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        reports = (
+            Attendance.objects.values(
+                "student__first_name",
+                "student__last_name",
+                "subject__sub_name",
+            )
+            .annotate(
+                total=Count("id"),
+                present=Count(
+                    "id",
+                    filter=Q(status="Present"),
+                ),
+                absent=Count(
+                    "id",
+                    filter=Q(status="Absent"),
+                ),
+                leave=Count(
+                    "id",
+                    filter=Q(status="Leave"),
+                ),
+            )
+            .order_by(
+                "student__first_name",
+                "subject__sub_name",
+            )
+        )
+
+        context["reports"] = reports
+
+        return context
+
+class MarkListView(LoginRequiredMixin, ListView):
+    """
+    Display all student marks.
+    """
+
+    model = Mark
+    template_name = "marks/mark_list.html"
+    context_object_name = "marks"
+    ordering = [
+        "student__first_name",
+        "subject__sub_name",
+    ]
+
+    def get_queryset(self):
+
+        queryset = Mark.objects.select_related(
+            "student",
+            "teacher",
+            "subject",
+            "exam",
+        )
+
+        user = self.request.user
+
+        if hasattr(user, "student_profile"):
+            return queryset.filter(student=user.student_profile)
+
+        return queryset
+
+
+class MarkCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = "Student.add_mark"
+
+    model = Mark
+    form_class = MarkForm
+    template_name = "marks/mark_create.html"
+    success_url = reverse_lazy("mark_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Marks added successfully."
+        )
+        return super().form_valid(form)
+
+
+class MarkUpdateView(UpdateView):
+    """
+    Update an existing mark record.
+    """
+
+    model = Mark
+    form_class = MarkForm
+    template_name = "marks/mark_update.html"
+    success_url = reverse_lazy("mark_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Marks updated successfully."
+        )
+        return super().form_valid(form)
+
+
+class ResultSheetView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    """
+    Display the result sheet of a selected exam.
+    """
+
+    permission_required = "Student.view_mark"
+
+    template_name = "marks/result_sheet.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        exam_id = self.kwargs.get("exam_id")
+
+        context["marks"] = (
+            Mark.objects.filter(
+                exam_id=exam_id
+            )
+            .select_related(
+                "student",
+                "subject",
+                "exam",
+            )
+            .order_by(
+                "student__first_name",
+                "subject__sub_name",
+            )
+        )
+
+        return context
+
+
+class TranscriptView(LoginRequiredMixin, TemplateView):
+    """
+    Display the complete academic transcript of a student.
+    """
+
+    template_name = "marks/transcript.html"
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+
+        # Student can view only own transcript
+        if hasattr(user, "student_profile"):
+
+            student = user.student_profile
+
+        else:
+
+            student = get_object_or_404(
+                Student,
+                pk=self.kwargs["student_id"],
+            )
+
+        marks = (
+            Mark.objects.filter(student=student)
+            .select_related(
+                "subject",
+                "exam",
+                "teacher",
+            )
+            .order_by(
+                "exam__start_date",
+                "subject__sub_name",
+            )
+        )
+
+        context["student"] = student
+        context["marks"] = marks
+
+        return context
+
+
+
+
+
+
+
+
+
+
+
 
