@@ -684,7 +684,7 @@ class AssignmentSubmissionDeleteView(LoginRequiredMixin, DeleteView):
 
     model = AssignmentSubmission
 
-    template_name = "Student/assignment/submission_delete.html"
+    template_name = "assignment/submission_delete.html"
 
     def get_success_url(self):
 
