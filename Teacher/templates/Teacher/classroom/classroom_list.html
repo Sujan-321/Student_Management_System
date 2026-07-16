@@ -1,4 +1,4 @@
-{% extends "Student/base.html" %}
+{% extends "Teacher/base.html" %}
 {% load group_tags %}
 
 {% block title %}Classrooms{% endblock %}
@@ -13,7 +13,7 @@
         {% if request.user|is_teacher %}
 
         
-        <a href="{% url 'classroom_create' %}" class="btn btn-primary">
+        <a href="{% url 'teacher:classroom_create' %}" class="btn btn-primary">
             Add Classroom
         </a>
         {% endif %}
@@ -64,7 +64,7 @@
                 
                 <td>
                     
-                    <a href="{% url 'classroom_update' classroom.pk %}"
+                    <a href="{% url 'teacher:classroom_update' classroom.pk %}"
                     class="btn btn-warning btn-sm">
                     Edit
                 </a>

@@ -38,7 +38,13 @@ from .views import (
     ExamCreateView,
     ExamUpdateView,
 
+    # for classroom
+    ClassRoomListView,
+    ClassRoomCreateView,
+    ClassRoomUpdateView,
+
 )
+app_name = "teacher"
 
 urlpatterns = [
     path("dashboard/", TeacherDashboardView.as_view(), name="teacher_dashboard"),
@@ -76,5 +82,10 @@ urlpatterns = [
     path("exam/", ExamListView.as_view(), name="exam_list"),
     path("exam/create/", ExamCreateView.as_view(), name="exam_create"),
     path("exam/<int:pk>/update/", ExamUpdateView.as_view(), name="exam_update"),
+
+    # for classroom
+    path("classrooms/", ClassRoomListView.as_view(), name="classroom_list"),
+    path("classrooms/create/", ClassRoomCreateView.as_view(), name="classroom_create"),
+    path("classrooms/<int:pk>/update/", ClassRoomUpdateView.as_view(), name="classroom_update"),
 
 ]

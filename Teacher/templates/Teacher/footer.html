@@ -18,17 +18,16 @@
       <div class="footer-col">
         <h4>Academics</h4>
         <ul>
-          <li><a href="{% url 'exam_list' %}">Exams</a></li>
-          <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>
-          <li><a href="{% url 'department_list' %}">Departments</a></li>
+          <li><a href="{% url 'teacher:exam_list' %}">Exams</a></li>
+          <li><a href="{% url 'teacher:classroom_list' %}">Classrooms</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Account</h4>
         <ul>
           {% if request.user|has_group:"Teacher" %}
-            <li><a href="{% url 'teacher_profile' %}">My profile</a></li>
-            <li><a href="{% url 'teacher_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'teacher:teacher_profile' %}">My profile</a></li>
+            <li><a href="{% url 'teacher:teacher_dashboard' %}">Dashboard</a></li>
           {% else %}
             <li><a href="{% url 'student_profile' %}">My profile</a></li>
             <li><a href="{% url 'student_dashboard' %}">Dashboard</a></li>

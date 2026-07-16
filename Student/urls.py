@@ -56,10 +56,8 @@ urlpatterns = [
 
     # for student feature
     path("student-list/", StudentListView.as_view(), name="student_list"),
-    path("student-create/", StudentCreateView.as_view(), name="student_create"),
     path("student-update/<int:pk>/", StudentUpdateView.as_view(), name="student_update"),
     path("student-detail/<int:pk>/", StudentDetailView.as_view(), name="student_detail"),
-    path("student-delete/<int:pk>/", StudentDeleteView.as_view(), name="student_delete"),
 
 
     # for Department feature
@@ -70,8 +68,6 @@ urlpatterns = [
 
     # for attendance
     path("attendance/", AttendanceListView.as_view(), name="attendance_list"),
-    path("attendance/create/", AttendanceCreateView.as_view(), name="attendance_create"),
-    path("attendance/<int:pk>/update/", AttendanceUpdateView.as_view(), name="attendance_update"),
     path("attendance/<int:pk>/", AttendanceDetailView.as_view(), name="attendance_detail"),
     path("attendance/report/", AttendanceReportView.as_view(), name="attendance_report"),
 

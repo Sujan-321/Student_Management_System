@@ -1,7 +1,7 @@
 {% load group_filters %}
 <nav class="navbar">
   <div class="navbar-inner">
-    <a href="{% if request.user|has_group:'Teacher' %}{% url 'teacher_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}" class="brand">
+    <a href="{% if request.user|has_group:'Teacher' %}{% url 'teacher:teacher_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}" class="brand">
       <span class="brand-mark">L</span> Ledger
     </a>
 
@@ -9,19 +9,19 @@
 
     <ul class="nav-links" id="navLinks">
       {% if request.user|has_group:"Teacher" %}
-        <li><a href="{% url 'teacher_dashboard' %}">Dashboard</a></li>
-        <li><a href="{% url 'student_list' %}">Students</a></li>
-        <li><a href="{% url 'assignment_list' %}">Assignment</a></li>
-        <li><a href="{% url 'attendance_list' %}">Attendance</a></li>
-        <li><a href="{% url 'mark_list' %}">Marks</a></li>
-        <li><a href="{% url 'exam_list' %}">Exams</a></li>
-        <li><a href="{% url 'classroom_list' %}">Classrooms</a></li>      
+        <li><a href="{% url 'teacher:teacher_dashboard' %}">Dashboard</a></li>
+        <li><a href="{% url 'teacher:student_lists' %}">Students</a></li>
+        <li><a href="{% url 'teacher:assignment_list' %}">Assignment</a></li>
+        <li><a href="{% url 'teacher:attendance_list' %}">Attendance</a></li>
+        <li><a href="{% url 'teacher:mark_list' %}">Marks</a></li>
+        <li><a href="{% url 'teacher:exam_list' %}">Exams</a></li>
+        <li><a href="{% url 'teacher:classroom_list' %}">Classrooms</a></li>      
       {% endif %}
     </ul>
 
     <div class="nav-user">
       {% if user.is_authenticated %}
-        <a href="{% if request.user|has_group:'Teacher' %}{% url 'teacher_profile' %}{% else %}{% url 'student_profile' %}{% endif %}">
+        <a href="{% if request.user|has_group:'Teacher' %}{% url 'teacher:teacher_profile' %}{% else %}{% url 'student_profile' %}{% endif %}">
           {{ user.get_full_name|default:user.username }}
         </a>
         <form action="{% url 'logout' %}" method="post">

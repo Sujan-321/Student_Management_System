@@ -1,4 +1,4 @@
-{% extends "Student/base.html" %}
+{% extends "Teacher/base.html" %}
 {% load group_tags %}
 
 {% block content %}
@@ -10,7 +10,7 @@
         <h2>Attendance Records</h2>
         {% if request.user|is_teacher %}
 
-        <a href="{% url 'attendance_create' %}" class="btn btn-primary">
+        <a href="{% url 'teacher:attendance_create' %}" class="btn btn-primary">
             Add Attendance
         </a>
         {% endif %}
@@ -48,11 +48,11 @@
                 {% if request.user|is_teacher %}
                 <td>
                     
-                    <a href="{% url 'attendance_detail' attendance.pk %}" class="btn btn-sm btn-info">
+                    <a href="{% url 'teacher:attendance_detail' attendance.pk %}" class="btn btn-sm btn-info">
                         View
                     </a>
                     
-                    <a href="{% url 'attendance_update' attendance.pk %}" class="btn btn-sm btn-warning">
+                    <a href="{% url 'teacher:attendance_update' attendance.pk %}" class="btn btn-sm btn-warning">
                         Edit
                     </a>
                     

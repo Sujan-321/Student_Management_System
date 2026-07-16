@@ -10,7 +10,8 @@ from django import forms
 from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from Student.models import Attendance, Mark, Exam, AssignmentSubmission
+from Student.models import Attendance, Mark, Exam, AssignmentSubmission, ClassRoom
+from Student.forms import ClassRoomForm
 
 
 
@@ -128,7 +129,6 @@ class AssignmentDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVi
 
 # working on student feature
 class StudentListView(LoginRequiredMixin, ListView):
-
     model = Student
     template_name = "Teacher/student_list.html"
     context_object_name = "students"
@@ -508,4 +508,54 @@ class ExamUpdateView(UpdateView):
         return super().form_valid(form)
 
 
+
+ #working on classroom feature
+class ClassRoomListView(ListView):
+    """
+    Display a list of all classrooms.
+    """
+
+    model = ClassRoom
+    template_name = "Teacher/classroom/classroom_list.html"
+    context_object_name = "classrooms"
+    ordering = [
+        "name",
+        "section",
+    ]
+
+
+class ClassRoomCreateView(CreateView):
+    """
+    Create a new classroom.
+    """
+
+    model = ClassRoom
+    form_class = ClassRoomForm
+    template_name = "classroom/classroom_create.html"
+    success_url = reverse_lazy("classroom_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Classroom created successfully."
+        )
+        return super().form_valid(form)
+
+
+class ClassRoomUpdateView(UpdateView):
+    """
+    Update an existing classroom.
+    """
+
+    model = ClassRoom
+    form_class = ClassRoomForm
+    template_name = "classroom/classroom_update.html"
+    success_url = reverse_lazy("classroom_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Classroom updated successfully."
+        )
+        return super().form_valid(form)
 
