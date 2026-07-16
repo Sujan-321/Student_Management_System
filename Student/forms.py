@@ -45,9 +45,16 @@ class MarkForm(forms.ModelForm):
 class AssignmentSubmissionForm(forms.ModelForm):
 
     class Meta:
-
         model = AssignmentSubmission
+        fields = ["pdf"]
 
-        fields = [
-            "pdf",
-        ]
+    def clean_pdf(self):
+
+        pdf = self.cleaned_data["pdf"]
+
+        if not pdf.name.lower().endswith(".pdf"):
+            raise forms.ValidationError(
+                "Only PDF files are allowed."
+            )
+
+        return pdf

@@ -590,9 +590,7 @@ class ClassRoomUpdateView(UpdateView):
 class AssignmentListView(LoginRequiredMixin, ListView):
 
     model = Post
-
-    template_name = "Teacher/assignment/assignment_list.html"
-
+    template_name = "assignment/assignment_list.html"
     context_object_name = "assignments"
 
     ordering = [
@@ -628,3 +626,76 @@ class AssignmentSubmitView(LoginRequiredMixin, CreateView):
         )
 
         return super().form_valid(form)
+
+
+class AssignmentDetailView(LoginRequiredMixin, DetailView):
+
+    model = Post
+    template_name = "assignment/assignment_detail.html"
+    context_object_name = "assignment"
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        student = self.request.user.student_profile
+
+        context["files"] = AssignmentSubmission.objects.filter(
+            assignment=self.object,
+            student=student
+        )
+
+        context["form"] = AssignmentSubmissionForm()
+
+        return context
+
+
+class AssignmentUploadView(LoginRequiredMixin, CreateView):
+
+    model = AssignmentSubmission
+    form_class = AssignmentSubmissionForm
+    template_name = "Student/assignment/assignment_upload.html"
+
+    def form_valid(self, form):
+
+        form.instance.student = self.request.user.student_profile
+
+        form.instance.assignment = Post.objects.get(
+            pk=self.kwargs["pk"]
+        )
+
+        messages.success(
+            self.request,
+            "PDF uploaded successfully."
+        )
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+
+        return reverse_lazy(
+            "assignment_detail",
+            kwargs={
+                "pk": self.kwargs["pk"]
+            }
+        )
+
+class AssignmentSubmissionDeleteView(LoginRequiredMixin, DeleteView):
+
+    model = AssignmentSubmission
+
+    template_name = "Student/assignment/submission_delete.html"
+
+    def get_success_url(self):
+
+        messages.success(
+            self.request,
+            "PDF deleted successfully."
+        )
+
+        return reverse_lazy(
+            "assignment_detail",
+            kwargs={
+                "pk": self.object.assignment.id
+            }
+        )

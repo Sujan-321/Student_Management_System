@@ -46,6 +46,9 @@ from .views import (
     #for assignment
     AssignmentListView,
     AssignmentSubmitView,
+    AssignmentDetailView,
+    AssignmentUploadView,
+    AssignmentSubmissionDeleteView,
 )
 
 urlpatterns = [
@@ -90,5 +93,13 @@ urlpatterns = [
 
     path("assignments/", AssignmentListView.as_view(), name="assignment_list"),
     path("assignment/<int:pk>/submit/", AssignmentSubmitView.as_view(), name="assignment_submit"),
+
+    path("assignments/", AssignmentListView.as_view(), name="assignment_list"),
+
+    path("assignments/<int:pk>/", AssignmentDetailView.as_view(), name="assignment_detail"),
+
+    path("assignments/<int:pk>/upload/", AssignmentUploadView.as_view(), name="assignment_upload"),
+
+    path("submission/<int:pk>/delete/", AssignmentSubmissionDeleteView.as_view(), name="submission_delete"),
 
 ]

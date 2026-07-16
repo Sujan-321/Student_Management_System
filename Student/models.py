@@ -184,11 +184,9 @@ class AssignmentSubmission(TimeStampModel):
 
     submitted_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = (
-            "student",
-            "assignment",
-        )
-
     def __str__(self):
         return f"{self.student} - {self.assignment}"
+
+
+
+
