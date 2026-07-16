@@ -1,0 +1,91 @@
+{% extends "Student/base.html" %}
+{% load group_tags %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Marks</h2>
+        {% if request.user|is_teacher %}
+        
+        <a href="{% url 'mark_create' %}" class="btn btn-primary">
+            Add Marks
+        </a>
+        {% endif %}
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>S.N.</th>
+                <th>Student</th>
+                <th>Subject</th>
+                <th>Exam</th>
+                <th>Obtained</th>
+                <th>Full Marks</th>
+                <th>Percentage</th>
+                <th>Result</th>
+                {% if request.user|is_teacher %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for mark in marks %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ mark.student }}</td>
+
+                <td>{{ mark.subject }}</td>
+
+                <td>{{ mark.exam }}</td>
+
+                <td>{{ mark.obtained_marks }}</td>
+
+                <td>{{ mark.full_marks }}</td>
+
+                <td>{{ mark.percentage }}%</td>
+
+                <td>{{ mark.result }}</td>
+                {% if request.user|is_teacher %}
+                
+                <td>
+                    
+                    <a href="{% url 'mark_update' mark.pk %}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+                    
+                </td>
+                {% endif %}
+                
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="9" class="text-center">
+                    No marks available.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
