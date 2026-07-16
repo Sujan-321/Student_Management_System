@@ -148,3 +148,41 @@ class AssignmentDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVi
 
 
 
+class StudentListView(LoginRequiredMixin, ListView):
+
+    model = Student
+    template_name = "Teacher/student_list.html"
+    context_object_name = "students"
+    paginate_by = 10
+
+    def get_queryset(self):
+
+        queryset = Student.objects.all().order_by("rank")
+
+        search = self.request.GET.get("search")
+
+        department = self.request.GET.get("department")
+
+        status = self.request.GET.get("status")
+
+        if search:
+
+            queryset = queryset.filter(
+
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(rank__icontains=search) |
+                Q(registration_number__icontains=search)
+
+            )
+
+        if department:
+
+            queryset = queryset.filter(department_id=department)
+
+        if status:
+
+            queryset = queryset.filter(status=status)
+
+        return queryset
+
