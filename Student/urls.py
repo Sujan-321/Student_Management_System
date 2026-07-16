@@ -5,7 +5,7 @@ from .views import (
     StudentProfileUpdateView,
     StudentProfileView,
     
-    # for studetn
+    # for student
     StudentListView,
     StudentCreateView,
     StudentUpdateView,

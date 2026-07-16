@@ -485,12 +485,22 @@ class ExamListView(ListView):
     """
 
     model = Exam
-    template_name = "exam/exam_list.html"
     context_object_name = "exams"
     ordering = [
         "-start_date",
         "exam_name",
     ]
+
+    def get_template_names(self):
+        user = self.request.user
+
+        if user.groups.filter(name="Teacher").exists():
+            return ["Teacher/exam/exam_list.html"]
+
+        elif user.groups.filter(name="Student").exists():
+            return ["Student/exam/exam_list.html"]
+
+        return ["exam/exam_list.html"]
 
 
 class ExamCreateView(CreateView):
