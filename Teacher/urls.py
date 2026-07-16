@@ -10,6 +10,8 @@ from .views import (
     # for Teacher
     TeacherDashboardView,
     TeacherProfileView,
+
+    #for assignment
     AssignmentListView,
     AssignmentCreateView,
     AssignmentUpdateView,
@@ -36,9 +38,6 @@ from .views import (
     ExamCreateView,
     ExamUpdateView,
 
-    #for assignment
-    AssignmentListView,
-    AssignmentSubmitView,
 )
 
 urlpatterns = [
@@ -53,7 +52,7 @@ urlpatterns = [
 
 
     # for student feature
-    path("student-list/", StudentListView.as_view(), name="student_list"),
+    path("student-list/", StudentListView.as_view(), name="student_lists"),
     path("student-create/", StudentCreateView.as_view(), name="student_create"),
     path("student-update/<int:pk>/", StudentUpdateView.as_view(), name="student_update"),
     path("student-detail/<int:pk>/", StudentDetailView.as_view(), name="student_detail"),
