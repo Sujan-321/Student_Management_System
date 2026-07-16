@@ -1,15 +1,4 @@
 from django.urls import path
-from .views import TeacherDashboardView, TeacherProfileView, AssignmentListView, AssignmentCreateView, AssignmentUpdateView, AssignmentDeleteView
-
-urlpatterns = [
-    path("dashboard/", TeacherDashboardView.as_view(), name="teacher_dashboard"),
-    path("profile/", TeacherProfileView.as_view(), name="teacher_profile"),
-    path("assignments/", AssignmentListView.as_view(), name="assignment_list"),
-    path("assignments/create/", AssignmentCreateView.as_view(), name="assignment_create"),
-    path("assignments/<int:pk>/update/", AssignmentUpdateView.as_view(), name="assignment_update"),
-    path("assignments/<int:pk>/delete/", AssignmentDeleteView.as_view(), name="assignment_delete"),
-]
-
 from .views import (
     
     # for student
@@ -17,6 +6,14 @@ from .views import (
     StudentCreateView,
     StudentUpdateView,
     StudentDetailView,
+
+    # for Teacher
+    TeacherDashboardView,
+    TeacherProfileView,
+    AssignmentListView,
+    AssignmentCreateView,
+    AssignmentUpdateView,
+    AssignmentDeleteView,
 
     #for attendance
     AttendanceListView,
@@ -45,6 +42,13 @@ from .views import (
 )
 
 urlpatterns = [
+    path("dashboard/", TeacherDashboardView.as_view(), name="teacher_dashboard"),
+    path("profile/", TeacherProfileView.as_view(), name="teacher_profile"),
+    path("assignments/", AssignmentListView.as_view(), name="assignment_list"),
+    path("assignments/create/", AssignmentCreateView.as_view(), name="assignment_create"),
+    path("assignments/<int:pk>/update/", AssignmentUpdateView.as_view(), name="assignment_update"),
+    path("assignments/<int:pk>/delete/", AssignmentDeleteView.as_view(), name="assignment_delete"),
+
 
     # for student feature
     path("student-list/", StudentListView.as_view(), name="student_list"),

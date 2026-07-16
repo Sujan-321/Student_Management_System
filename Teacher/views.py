@@ -1,13 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DeleteView
+from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DeleteView, DetailView
 from django.urls import reverse_lazy
-from .forms import TeacherProfileForm, AssignmentForm
+from .forms import TeacherProfileForm, AssignmentForm, StudentForm, AttendanceForm, MarkForm, ExamForm, AssignmentSubmissionForm
 from .models import Teacher, Subject, Post
 from Student.models import Student
 from django.contrib import messages
 from django.shortcuts import redirect
 from django import forms
 from django.db.models import Q, Count
+from django.shortcuts import get_object_or_404
+from django.http import Http404
+from Student.models import Attendance, Mark, Exam, AssignmentSubmission
+
+
 
 
 class TeacherDashboardView(LoginRequiredMixin, TemplateView):
@@ -463,9 +468,102 @@ class TranscriptView(LoginRequiredMixin, TemplateView):
 
 
 
+# working on exam feature
+
+class ExamListView(ListView):
+    """
+    Display a list of all examinations.
+    """
+
+    model = Exam
+    template_name = "exam/exam_list.html"
+    context_object_name = "exams"
+    ordering = [
+        "-start_date",
+        "exam_name",
+    ]
+
+
+class ExamCreateView(CreateView):
+    """
+    Create a new examination.
+    """
+
+    model = Exam
+    form_class = ExamForm
+    template_name = "exam/exam_create.html"
+    success_url = reverse_lazy("exam_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Examination created successfully."
+        )
+        return super().form_valid(form)
+
+
+class ExamUpdateView(UpdateView):
+
+    """
+    Update an existing examination.
+    """
+
+    model = Exam
+    form_class = ExamForm
+    template_name = "exam/exam_update.html"
+    success_url = reverse_lazy("exam_list")
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            "Examination updated successfully."
+        )
+        return super().form_valid(form)
+
+
+# working on Assignment
+
+class AssignmentListView(LoginRequiredMixin, ListView):
+
+    model = Post
+
+    template_name = "Teacher/assignment/assignment_list.html"
+
+    context_object_name = "assignments"
+
+    ordering = [
+        "-created_at",
+    ]
 
 
 
+class AssignmentSubmitView(LoginRequiredMixin, CreateView):
+
+    model = AssignmentSubmission
+
+    form_class = AssignmentSubmissionForm
+
+    template_name = "Student/assignment_submit.html"
+
+    success_url = reverse_lazy(
+        "assignment_list"
+    )
+
+    def form_valid(self, form):
+
+        form.instance.student = self.request.user.student_profile
+
+        form.instance.assignment = get_object_or_404(
+            Post,
+            pk=self.kwargs["pk"],
+        )
+
+        messages.success(
+            self.request,
+            "Assignment submitted successfully."
+        )
+
+        return super().form_valid(form)
 
 
 
