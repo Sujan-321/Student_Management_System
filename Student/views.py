@@ -187,6 +187,7 @@ class DepartmentListView(ListView):
     template_name = "department/department_list.html"
     context_object_name = "departments"
     ordering = ["name"]
+    paginate_by = 10
 
 
 class DepartmentCreateView(CreateView):
@@ -228,6 +229,7 @@ class AttendanceListView(LoginRequiredMixin, ListView):
     template_name = "attendance/attendance_list.html"
     context_object_name = "attendances"
     ordering = ["-attendance_date", "student"]
+    paginate_by = 10
 
     def get_queryset(self):
 
@@ -349,6 +351,7 @@ class MarkListView(LoginRequiredMixin, ListView):
         "student__first_name",
         "subject__sub_name",
     ]
+    paginate_by = 10
 
     def get_queryset(self):
 
@@ -491,6 +494,7 @@ class ExamListView(ListView):
         "-start_date",
         "exam_name",
     ]
+    paginate_by = 10
 
 
 class ExamCreateView(CreateView):
@@ -544,6 +548,7 @@ class ClassRoomListView(ListView):
         "name",
         "section",
     ]
+    paginate_by = 10
 
 
 class ClassRoomCreateView(CreateView):
@@ -593,6 +598,7 @@ class AssignmentListView(LoginRequiredMixin, ListView):
     ordering = [
         "-created_at",
     ]
+    paginate_by = 10
 
 
 class AssignmentSubmitView(LoginRequiredMixin, CreateView):
