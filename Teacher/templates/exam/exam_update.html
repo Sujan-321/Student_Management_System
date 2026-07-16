@@ -1,0 +1,31 @@
+{% extends "Student/base.html" %}
+
+{% block title %}Update Examination{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Update Examination</h2>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit"
+                class="btn btn-primary">
+            Update
+        </button>
+
+        <a href="{% url 'exam_list' %}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
